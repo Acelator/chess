@@ -7,6 +7,12 @@
 #include "utils/utils.h"
 
 class Player{
+	Utils::Color m_color;
+
+public:
+	Player(Utils::Color color) : m_color(color){};
+
+	Utils::Color getPlayerColor();
 };
 
 #endif

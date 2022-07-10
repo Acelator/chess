@@ -1,10 +1,11 @@
 #include <iostream>
-#include "player.h"
-#include "board.h"
+
+#include "game.h"
 
 int main() {
-	Board board = Board();
-	std::cout << std::hex << board.getPieceSet(Utils::enumPieces::white);
+	Game game = Game();
+
+	game.makeMove(Utils::enumPieces::rook, 0x80, 0x800000);
 
 	return 0;
 }

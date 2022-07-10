@@ -3,7 +3,6 @@
 
 #include <cstdint>
 
-
 using U64 = std::uint_fast64_t;
 
 namespace Utils{
@@ -22,6 +21,6 @@ namespace Utils{
 		queen,
 		king
 	};
-}
+};
 
 #endif
