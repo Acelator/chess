@@ -17,22 +17,20 @@ Player& Game::getNextPlayer() {
 }
 
 // Do we need to return the board?
-Board& Game::makeMove(Utils::enumPieces pt, U64 from, U64 to) {
-	Utils::Color color = getCurrentPlayer().getPlayerColor();
-
+U64 Game::makeMove(Utils::enumPieces pt, std::uint_fast8_t from, std::uint_fast8_t to, Utils::flagsType moveType) {
 	// Get all the given pieces of type from a player
-	U64 ptPieces{this->m_Board.getPieceSetOfAGivenPlayer(pt, color)};	
-	U64 pieceToMove{ptPieces & from};
+	//U64 ptPieces{this->m_Board.getPieceSetOfAGivenPlayer(pt, color)};
+	//U64 pieceToMove{ptPieces & from};
 
 	// Delete the old position of the piece
-	ptPieces = (ptPieces ^ pieceToMove);
+	//ptPieces = (ptPieces ^ pieceToMove);
 
 	// TODO: Check if movement is valid
 	// Set the new position
-	ptPieces = (ptPieces | to);
+	//ptPieces = (ptPieces | to);
 
-	this->m_Board.updateBoard(pt, color, ptPieces);
-	
-
-	return this->m_Board;
+	//this->m_Board.updateBoard(pt, color, ptPieces);
+	Move move = Move(pt, getCurrentPlayer(), from, to, moveType);
+	this->m_Board.updateBoard(move, getCurrentPlayer());
+	return this->m_Board.getCompleteBoard();
 }

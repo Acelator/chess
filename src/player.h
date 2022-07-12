@@ -11,8 +11,11 @@ class Player{
 
 public:
 	Player(Utils::Color color) : m_color(color){};
+	// Determine the problem
+	// Player(Player& pj) : m_color(pj.getPlayerColor()) {};
 
 	Utils::Color getPlayerColor();
+
 };
 
 #endif

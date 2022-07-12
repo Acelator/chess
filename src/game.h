@@ -1,11 +1,14 @@
 #ifndef CHESS_GAME_H
 #define CHESS_GAME_H
 
+// Make sure libraries are only compiled once
+#include <cstdint>
 #include <iostream>
 
 #include "utils/utils.h"
 
 #include "board.h"
+#include "move.h"
 #include "player.h"
 
 class Game {
@@ -28,7 +31,7 @@ public:
 	Player& getNextPlayer();
 
 	// Allow "to" to be expressed in chess notation (ej. f4)
-	Board& makeMove(Utils::enumPieces pt, U64 from, U64 to);
+	U64 makeMove(Utils::enumPieces pt, std::uint_fast8_t from, std::uint_fast8_t to, Utils::flagsType moveType);
 
 };
 
