@@ -5,7 +5,7 @@
 int main() {
 	Game game = Game();
 
-	game.makeMove(Utils::enumPieces::rook, 0x80, 0x90, Utils::flagsType::capture);
+	game.makeMove(Utils::enumPieces::pawn, 15, 22, Utils::flagsType::quietMove);
 
 	return 0;
 }

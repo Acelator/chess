@@ -1,28 +1,4 @@
 #include "move.h"
-#include "utils/utils.h"
-
-bool Move::isMoveValid() {
-	switch (this->flags) {
-		case (Utils::flagsType::quietMove) :
-
-			break;
-		case (Utils::flagsType::doublePawnPush):
-		case (Utils::flagsType::kingCastle):
-		case (Utils::flagsType::queenCastle):
-		case (Utils::flagsType::capture):
-		case (Utils::flagsType::epCapture):
-		case (Utils::flagsType::knightPromotion):
-		case (Utils::flagsType::bishopPromotion):
-		case (Utils::flagsType::rookPromotion):
-		case (Utils::flagsType::queenPromotion):
-		case (Utils::flagsType::knightPromoAndCapture):
-		case (Utils::flagsType::bishopPromoAndCapture):
-		case (Utils::flagsType::rookPromoAndCapture):
-		case (Utils::flagsType::queenPromoAndCapture):
-			break;
-	}
-	return false;
-}
 
 bool Move::isCapture() {
 	std::cout << "Color: "<<  pj.getPlayerColor() <<'\n';
@@ -48,3 +24,9 @@ Utils::flagsType Move::getFlags() {
 Utils::enumPieces Move::getPieceType() {
 	return this->pt;
 }
+
+int Move::mapIntFromLERFnotation(std::uint_fast8_t square) {
+	float division = (static_cast<float>(square) / 8);
+	return std::ceil(division); 
+}
+

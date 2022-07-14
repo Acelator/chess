@@ -1,7 +1,7 @@
 #include "board.h"
 
 U64 Board::getCompleteBoard() {
-	return this->m_playerSet[Utils::Color::whitePLayer] | this->m_pieces[Utils::Color::blackPlayer];
+	return this->m_playerSet[Utils::Color::whitePLayer] | this->m_playerSet[Utils::Color::blackPlayer];
 }
 
 U64 Board::getPieceSet(Utils::enumPieces pt) {

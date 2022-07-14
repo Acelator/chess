@@ -16,7 +16,7 @@ class Board{
 
 public:
 	Board() {
-		// Little-Endian File Rank (LEFR) Mapping
+		// Little-Endian Rank File (LERF) Mapping
 		// Set up starting pieces position
 		m_playerSet[Utils::Color::whitePLayer]  =  0xffff;
 		m_playerSet[Utils::Color::blackPlayer]  =  0xffff000000000000;
@@ -41,6 +41,8 @@ public:
 
 	// Returns the updatedBoard
 	void updateBoard(Move& move, Player dpj);
+
+	friend bool validateMove(Move& move, Board& board);
 };
 
 

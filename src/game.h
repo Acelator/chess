@@ -9,13 +9,15 @@
 
 #include "board.h"
 #include "move.h"
+
+#include "utils/moveValidator.h"
 #include "player.h"
 
 class Game {
 private:
 	Player white;
 	Player black;
-	Board m_Board;
+	Board m_Board{};
 
 	int turnCount{};
 	bool currentTurn{};
