@@ -41,8 +41,6 @@ public:
 
 	// Returns the updatedBoard
 	void updateBoard(Move& move, Player dpj);
-
-	friend bool validateMove(Move& move, Board& board);
 };
 
 
