@@ -5,7 +5,8 @@ bool MoveValidator::validate() {
 	// TODO: Check both rook and king if castle
 	U64 pieceBoardOfCurrentPlayer{this->board.getPieceSetOfAGivenPlayer(move.getPieceType(), player)};
 
-	U64 piece = (0x1 << move.getFrom());
+	// IMPORTANT
+	U64 piece = (static_cast<std::uint_fast64_t>(1) << move.getFrom());
 	bool condition = ((piece & pieceBoardOfCurrentPlayer) != 0);
 
 	if (!condition) {
@@ -14,33 +15,34 @@ bool MoveValidator::validate() {
 		return false;
 	}
 
+	// Should we determine the flags or they should be provided by the engine??
 	switch (move.getFlags()) {
-		case (Utils::flagsType::quietMove): {
+		case (Utils::flagsType::quietMove):
+		case (Utils::flagsType::doublePawnPush): {
 			// MoveValidator.isCheck();
 			std::vector<Utils::enumSquare> path{};
+
 			try {
 				path = this->calculatePath();
-				// movement board
-				// Represents the path that the piece follow
-				U64 movementBoard{};
-				for (auto i : path) {
-					U64 currentSquare = (0x1 << i);
-					movementBoard = (movementBoard | currentSquare);
-				}
-				
-				for (int i{0}; i < static_cast<int>(path.size()); i++) {
-
-				}
-
 			} catch (int x) {
 				// TODO: Document possible exceptions
 				if (x == -1) {
 					return false;
 				}
 			}
-			break;
-		}
-		case (Utils::flagsType::doublePawnPush): {
+			// Represents the path that the piece follow
+			U64 movementBoard{};
+			for (auto i : path) {
+				U64 currentSquare = (static_cast<std::uint_fast64_t>(1) << i);
+				movementBoard = (movementBoard | currentSquare);
+			}
+
+			auto completeBoard{this->board.getCompleteBoard()};
+
+			// No piece intersect during the movement
+			if((completeBoard & movementBoard) == 0) {
+				return true;
+			}
 			break;
 		}
 		case (Utils::flagsType::kingCastle):
@@ -51,9 +53,9 @@ bool MoveValidator::validate() {
 		case (Utils::flagsType::epCapture): {
 			break;
 		}
+		case (Utils::flagsType::rookPromotion):
 		case (Utils::flagsType::knightPromotion):
 		case (Utils::flagsType::bishopPromotion):
-		case (Utils::flagsType::rookPromotion):
 		case (Utils::flagsType::queenPromotion): {
 			break;
 		}
@@ -65,34 +67,58 @@ bool MoveValidator::validate() {
 			
 		}
 	}
-	return  true;
+	return  false;
 }
 
 std::vector<Utils::enumSquare> MoveValidator::calculatePath() {
 	auto pt = move.getPieceType();
 	std::vector<Utils::enumSquare> path{};
+	//path.push_back(static_cast<Utils::enumSquare>(move.getFrom()));
 
 	// Use switch
+	// TODO: Impement empesant
 	if(pt == Utils::enumPieces::pawn) {
 		// Determine the file of the starting and final position
-		int startingFile = move.mapIntFromLERFnotation(move.getFrom());
-		int finalFile{move. mapIntFromLERFnotation(move.getTo())};
+		int startingFile = move.obtainFileFromSquare(move.getFrom());
+		int finalFile{move.obtainFileFromSquare(move.getTo())};
 
 		// Diagonal movement
-		// TODO: Check that the movement is not more than one square
 		if(startingFile != finalFile) {
-			if ((finalFile - startingFile == 1 ) || (startingFile - finalFile == 1)) {
+			// TODO: Check if this works
+			if(!(move.getFlags() == Utils::flagsType::capture) || !(move.getFlags() == Utils::flagsType::epCapture)) {
+				// Piece is trying to go diagonally without capturing a piece
+				throw -1;
+			}
+			if ((std::abs(finalFile - startingFile)) == 1 )  {
 				path.push_back(static_cast<Utils::enumSquare>(move.getTo()));
 				return path;
 			} else {
 				// Maybe create a class to represent the exception??
 				// Temporally
+				// Pawn is trying to go from one file to another two units away
 				throw -1;
 			}
-		} else { // Straight line
-			 path.push_back(static_cast<Utils::enumSquare>(move.getTo()));
-			 return path;
+		} else if (std::abs(move.getTo() - move.getFrom()) == 16) {
+			// Double pawn push
+			if ((move.obtainRankFromSquare(move.getFrom()) == 2) && (player.getPlayerColor() == Utils::Color::whitePLayer)) {
+				path.push_back(static_cast<Utils::enumSquare>(move.getFrom() + 8));
+				path.push_back(static_cast<Utils::enumSquare>(move.getTo()));
+				return path;
+			} else if ((move.obtainRankFromSquare(move.getFrom()) == 7) && (player.getPlayerColor() == Utils::Color::blackPlayer)) {
+				path.push_back(static_cast<Utils::enumSquare>(move.getFrom() - 8));
+				path.push_back(static_cast<Utils::enumSquare>(move.getTo()));
+				return path;
+			} else {
+				// Pawn isn't in the intial position, so the double push isn't possible
+				throw -1;
+			}
+		} else if (std::abs(move.getTo() - move.getFrom()) > 16) {
+			// Pawn is trying to go further than two squares in straight line
+			throw -1;
+		} else {
+			path.push_back(static_cast<Utils::enumSquare>(move.getTo()));
 		}
+		return path;
 	} else if (pt == Utils::enumPieces::bishop) {
 
 	} else if (pt == Utils::enumPieces::knight) {

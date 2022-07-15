@@ -30,7 +30,8 @@ public:
 
 	// Takes a square in LERF notation and convert it into the number of the file or of the rank
 	// TODO: Remove as a member function??
-	int mapIntFromLERFnotation(std::uint_fast8_t square);
+	int obtainRankFromSquare(std::uint_fast8_t square);
+	int obtainFileFromSquare(std::uint_fast8_t square);
 };
 
 #endif

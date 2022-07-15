@@ -19,8 +19,10 @@ private:
 	Player black;
 	Board m_Board{};
 
-	int turnCount{};
+	int turnCount{1};
 	bool currentTurn{};
+
+	void newTurn();
 public:
 	Game() : white(Utils::Color::whitePLayer), black(Utils::Color::blackPlayer) {
 		// White starts

@@ -25,8 +25,31 @@ Utils::enumPieces Move::getPieceType() {
 	return this->pt;
 }
 
-int Move::mapIntFromLERFnotation(std::uint_fast8_t square) {
+int Move::obtainFileFromSquare(std::uint_fast8_t square) {
 	float division = (static_cast<float>(square) / 8);
-	return std::ceil(division); 
+	double integer{};
+	float decimal = std::modf(division, &integer);	
+	if(decimal == 0) {
+		return 1;
+	}
+
+	int count{1};
+	for(float i{0.125}; i < 1; i += 0.125) {
+		if(i == decimal) {
+			count++;
+			return count;
+		} else {
+			count ++;
+		}
+	}
+	return 0;
 }
 
+int Move::obtainRankFromSquare(std::uint_fast8_t square) {
+	float division = (static_cast<float>(square) / 8);
+	if (std::ceil(division) == division) {
+		// number is whole
+		return division + 1;
+	}
+	return std::ceil(division);
+}

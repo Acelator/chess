@@ -39,7 +39,6 @@ public:
 	U64 getPieceSetOfAGivenPlayer(Utils::enumPieces pt, Player &pj);
 	U64 getAllPiecesOfAGivenPlayer(Player &pj);
 
-	// Returns the updatedBoard
 	void updateBoard(Move& move, Player dpj);
 };
 
