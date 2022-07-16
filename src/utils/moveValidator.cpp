@@ -34,9 +34,11 @@ bool MoveValidator::validate() {
 			U64 movementBoard{};
 			for (auto i : path) {
 				U64 currentSquare = (static_cast<std::uint_fast64_t>(1) << i);
+				std::cout << "Current: " << currentSquare << '\n';
 				movementBoard = (movementBoard | currentSquare);
 			}
 
+			std::cout << "complete: " << movementBoard << '\n';
 			auto completeBoard{this->board.getCompleteBoard()};
 
 			// No piece intersect during the movement
@@ -73,15 +75,14 @@ bool MoveValidator::validate() {
 std::vector<Utils::enumSquare> MoveValidator::calculatePath() {
 	auto pt = move.getPieceType();
 	std::vector<Utils::enumSquare> path{};
-	//path.push_back(static_cast<Utils::enumSquare>(move.getFrom()));
+
+	// Determine the file of the starting and final square
+	int startingFile = move.obtainFileFromSquare(move.getFrom());
+	int finalFile{move.obtainFileFromSquare(move.getTo())};
 
 	// Use switch
-	// TODO: Impement empesant
+	// TODO: Impement en passant
 	if(pt == Utils::enumPieces::pawn) {
-		// Determine the file of the starting and final position
-		int startingFile = move.obtainFileFromSquare(move.getFrom());
-		int finalFile{move.obtainFileFromSquare(move.getTo())};
-
 		// Diagonal movement
 		if(startingFile != finalFile) {
 			// TODO: Check if this works
@@ -120,6 +121,43 @@ std::vector<Utils::enumSquare> MoveValidator::calculatePath() {
 		}
 		return path;
 	} else if (pt == Utils::enumPieces::bishop) {
+		if (startingFile == finalFile) {
+			// Bishop move isn't diagonal
+			throw -1;
+		} else {
+			// Compass rose
+			// TODO: Improve (Explain why 9 and 7 are used)
+			if((std::abs(move.getFrom() - move.getTo()) % 9) == 0) {
+				std::cout << ":Sdsadadad\n";
+				if(move.getFrom() > move.getTo()) {
+					// noEa
+					for(int i{move.getFrom() - 9}; i >= move.getTo(); i -= 9) {
+						path.push_back(static_cast<Utils::enumSquare>(i));
+					}
+				} else {
+					std::cout << "Cocococn\n";
+					// soWe
+					for(int i{move.getFrom() + 9}; i <= move.getTo(); i += 9) {
+						path.push_back(static_cast<Utils::enumSquare>(i));
+					}
+				}
+			} else if ((std::abs(move.getFrom() - move.getTo()) % 7) == 0) {
+				std::cout << "Ppasasad\n";
+				if(move.getFrom() > move.getTo()) {
+					// noWe
+					for(int i{move.getFrom() - 7}; i >= move.getTo(); i -= 7) {
+						path.push_back(static_cast<Utils::enumSquare>(i));
+					}
+				} else {
+					// soEa
+					for(int i{move.getFrom() + 7}; i <= move.getTo(); i += 7) {
+						path.push_back(static_cast<Utils::enumSquare>(i));
+					}
+				}
+			} else {
+				throw -1;
+			}
+		}
 
 	} else if (pt == Utils::enumPieces::knight) {
 		
