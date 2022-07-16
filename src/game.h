@@ -35,8 +35,7 @@ public:
 	Player& getNextPlayer();
 
 	// Allow "to" to be expressed in chess notation (ej. f4)
-	U64 makeMove(Utils::enumPieces pt, std::uint_fast8_t from, std::uint_fast8_t to, Utils::flagsType moveType);
-
+	U64 makeMove(Utils::enumPieces pt, std::uint_fast8_t from, std::uint_fast8_t to);
 };
 
 #endif

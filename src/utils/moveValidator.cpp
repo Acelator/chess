@@ -15,59 +15,31 @@ bool MoveValidator::validate() {
 		return false;
 	}
 
-	// Should we determine the flags or they should be provided by the engine??
-	switch (move.getFlags()) {
-		case (Utils::flagsType::quietMove):
-		case (Utils::flagsType::doublePawnPush): {
-			// MoveValidator.isCheck();
-			std::vector<Utils::enumSquare> path{};
+	// MoveValidator.isCheck();
+	std::vector<Utils::enumSquare> path{};
 
-			try {
-				path = this->calculatePath();
-			} catch (int x) {
-				// TODO: Document possible exceptions
-				if (x == -1) {
-					return false;
-				}
-			}
-			// Represents the path that the piece follow
-			U64 movementBoard{};
-			for (auto i : path) {
-				U64 currentSquare = (static_cast<std::uint_fast64_t>(1) << i);
-				std::cout << "Current: " << currentSquare << '\n';
-				movementBoard = (movementBoard | currentSquare);
-			}
+	try {
+		path = this->calculatePath();
+	} catch (int x) {
+		// TODO: Document possible exceptions
+		if (x == -1) {
+			return false;
+		}
+	}
+	// Represents the path that the piece follow
+	U64 movementBoard{};
+	for (auto i : path) {
+		U64 currentSquare = (static_cast<std::uint_fast64_t>(1) << i);
+		std::cout << "Current: " << currentSquare << '\n';
+		movementBoard = (movementBoard | currentSquare);
+	}
 
-			std::cout << "complete: " << movementBoard << '\n';
-			auto completeBoard{this->board.getCompleteBoard()};
+	std::cout << "complete: " << movementBoard << '\n';
+	auto completeBoard{this->board.getCompleteBoard()};
 
-			// No piece intersect during the movement
-			if((completeBoard & movementBoard) == 0) {
-				return true;
-			}
-			break;
-		}
-		case (Utils::flagsType::kingCastle):
-		case (Utils::flagsType::queenCastle): {
-			break;
-		}
-		case (Utils::flagsType::capture):
-		case (Utils::flagsType::epCapture): {
-			break;
-		}
-		case (Utils::flagsType::rookPromotion):
-		case (Utils::flagsType::knightPromotion):
-		case (Utils::flagsType::bishopPromotion):
-		case (Utils::flagsType::queenPromotion): {
-			break;
-		}
-		case (Utils::flagsType::knightPromoAndCapture):
-		case (Utils::flagsType::bishopPromoAndCapture):
-		case (Utils::flagsType::rookPromoAndCapture):
-		case (Utils::flagsType::queenPromoAndCapture): {
-			break;
-			
-		}
+	// No piece intersect during the movement
+	if((completeBoard & movementBoard) == 0) {
+		return true;
 	}
 	return  false;
 }
@@ -92,10 +64,10 @@ std::vector<Utils::enumSquare> MoveValidator::calculatePath() {
 		if(startingFile != finalFile) {
 			// TODO: Check if this works
 			// Dont rely on flags?? 
-			if(!(move.getFlags() == Utils::flagsType::capture) || !(move.getFlags() == Utils::flagsType::epCapture)) {
+			//if(!(move.getFlags() == Utils::flagsType::capture) || !(move.getFlags() == Utils::flagsType::epCapture)) {
 				// Piece is trying to go diagonally without capturing a piece
-				throw -1;
-			}
+			//	throw -1;
+			//}
 			// TODO: Implement board frame check (Don't allow movement by moving outside of the board)
 			// (Ej. from file 8 to 1)
 			if ((std::abs(finalFile - startingFile)) == 1 )  {

@@ -41,24 +41,6 @@ namespace Utils{
 		queen,
 		king
 	};
-
-	enum flagsType{
-		quietMove,
-		doublePawnPush,
-		kingCastle,
-		queenCastle,
-		capture,
-		epCapture,
-		knightPromotion,
-		bishopPromotion,
-		rookPromotion,
-		queenPromotion,
-		knightPromoAndCapture,
-		bishopPromoAndCapture,
-		rookPromoAndCapture,
-		queenPromoAndCapture
-	};
-
 };
 
 #endif

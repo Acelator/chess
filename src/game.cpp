@@ -21,7 +21,7 @@ Player& Game::getNextPlayer() {
 	}
 }
 
-U64 Game::makeMove(Utils::enumPieces pt, std::uint_fast8_t from, std::uint_fast8_t to, Utils::flagsType moveType) {
+U64 Game::makeMove(Utils::enumPieces pt, std::uint_fast8_t from, std::uint_fast8_t to) {
 	// Get all the given pieces of type from a player
 	//U64 ptPieces{this->m_Board.getPieceSetOfAGivenPlayer(pt, color)};
 	//U64 pieceToMove{ptPieces & from};
@@ -29,12 +29,11 @@ U64 Game::makeMove(Utils::enumPieces pt, std::uint_fast8_t from, std::uint_fast8
 	// Delete the old position of the piece
 	//ptPieces = (ptPieces ^ pieceToMove);
 
-	// TODO: Check if movement is valid
 	// Set the new position
 	//ptPieces = (ptPieces | to);
 
 	//this->m_Board.updateBoard(pt, color, ptPieces);
-	Move move = Move(pt, getCurrentPlayer(), from, to, moveType);
+	Move move = Move(pt, getCurrentPlayer(), from, to);
 	
 	MoveValidator validator = MoveValidator(this->m_Board, move, this->getCurrentPlayer());
 	bool isValid = validator.validate();
