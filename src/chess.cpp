@@ -5,9 +5,10 @@
 int main() {
 	Game game = Game();
 
-	game.makeMove(Utils::enumPieces::bishop, 5, 26, Utils::flagsType::quietMove);
-	game.makeMove(Utils::enumPieces::bishop, 61, 16, Utils::flagsType::quietMove);
-	game.makeMove(Utils::enumPieces::pawn, 15, 31, Utils::flagsType::quietMove);
+	game.makeMove(Utils::enumPieces::knight, 6, 21, Utils::flagsType::quietMove);
+	game.makeMove(Utils::enumPieces::rook, 56, 63, Utils::flagsType::quietMove);
+	game.makeMove(Utils::enumPieces::bishop, 5, 23, Utils::flagsType::quietMove);
+	game.makeMove(Utils::enumPieces::pawn, 48, 32, Utils::flagsType::quietMove);
 
 	return 0;
 }

@@ -80,16 +80,24 @@ std::vector<Utils::enumSquare> MoveValidator::calculatePath() {
 	int startingFile = move.obtainFileFromSquare(move.getFrom());
 	int finalFile{move.obtainFileFromSquare(move.getTo())};
 
+	// Determine the rank fo the starting and final square
+	auto startingRank = move.obtainRankFromSquare(move.getFrom());
+	auto finalRank = move.obtainRankFromSquare(move.getTo());
+
 	// Use switch
 	// TODO: Impement en passant
+	// TODO: Check if horizontal movement isn't possible
 	if(pt == Utils::enumPieces::pawn) {
 		// Diagonal movement
 		if(startingFile != finalFile) {
 			// TODO: Check if this works
+			// Dont rely on flags?? 
 			if(!(move.getFlags() == Utils::flagsType::capture) || !(move.getFlags() == Utils::flagsType::epCapture)) {
 				// Piece is trying to go diagonally without capturing a piece
 				throw -1;
 			}
+			// TODO: Implement board frame check (Don't allow movement by moving outside of the board)
+			// (Ej. from file 8 to 1)
 			if ((std::abs(finalFile - startingFile)) == 1 )  {
 				path.push_back(static_cast<Utils::enumSquare>(move.getTo()));
 				return path;
@@ -119,7 +127,6 @@ std::vector<Utils::enumSquare> MoveValidator::calculatePath() {
 		} else {
 			path.push_back(static_cast<Utils::enumSquare>(move.getTo()));
 		}
-		return path;
 	} else if (pt == Utils::enumPieces::bishop) {
 		if (startingFile == finalFile) {
 			// Bishop move isn't diagonal
@@ -128,21 +135,18 @@ std::vector<Utils::enumSquare> MoveValidator::calculatePath() {
 			// Compass rose
 			// TODO: Improve (Explain why 9 and 7 are used)
 			if((std::abs(move.getFrom() - move.getTo()) % 9) == 0) {
-				std::cout << ":Sdsadadad\n";
 				if(move.getFrom() > move.getTo()) {
 					// noEa
 					for(int i{move.getFrom() - 9}; i >= move.getTo(); i -= 9) {
 						path.push_back(static_cast<Utils::enumSquare>(i));
 					}
 				} else {
-					std::cout << "Cocococn\n";
 					// soWe
 					for(int i{move.getFrom() + 9}; i <= move.getTo(); i += 9) {
 						path.push_back(static_cast<Utils::enumSquare>(i));
 					}
 				}
 			} else if ((std::abs(move.getFrom() - move.getTo()) % 7) == 0) {
-				std::cout << "Ppasasad\n";
 				if(move.getFrom() > move.getTo()) {
 					// noWe
 					for(int i{move.getFrom() - 7}; i >= move.getTo(); i -= 7) {
@@ -160,9 +164,57 @@ std::vector<Utils::enumSquare> MoveValidator::calculatePath() {
 		}
 
 	} else if (pt == Utils::enumPieces::knight) {
-		
-	} else if (pt == Utils::enumPieces::rook) {
+		auto startingRank = move.obtainRankFromSquare(move.getFrom());
+		auto finalRank = move.obtainRankFromSquare(move.getTo());
 
+		// Knight always moves three squares
+		if((std::abs(startingRank - finalRank) + std::abs(startingFile - finalFile)) != 3) {
+			// knight is trying to move further away than three squares
+			throw -1;
+		} else if((startingFile == finalFile) || (startingRank == finalRank)) {
+			// Knight is trying to move three squares in straight line
+			throw -1;
+		}
+
+		// move is valid
+		path.push_back(static_cast<Utils::enumSquare>(move.getTo()));
+		return path;
+
+	} else if (pt == Utils::enumPieces::rook) {
+		if((startingRank != finalRank) && (startingFile != finalFile)) {
+			// Rook is trying a diagonal move
+			throw -1;
+		} else {
+			if(startingRank == finalRank) {
+				// Horizontal movement
+				if(move.getFrom() > move.getTo()) {
+					// west
+					for(int i{move.getFrom() - 1}; i >= move.getTo(); i--) {
+						path.push_back(static_cast<Utils::enumSquare>(i));
+					}
+				} else {
+					// east
+					for(int i{move.getFrom() + 1}; i <= move.getTo(); i++) {
+						path.push_back(static_cast<Utils::enumSquare>(i));
+					}
+				}
+			} else if (startingFile == finalFile) {
+				// Vertical movement
+				if(move.getFrom() > move.getTo()) {
+					// sout
+					for(int i{move.getFrom() - 8}; i >= move.getTo(); i -= 8) {
+						path.push_back(static_cast<Utils::enumSquare>(i));
+				}
+			} else {
+					// nort
+					for(int i{move.getFrom() + 8}; i <= move.getTo(); i += 8) {
+						path.push_back(static_cast<Utils::enumSquare>(i));
+					}
+				}
+			} else {
+				throw -1;
+			}
+		}
 	} else if (pt == Utils::enumPieces::queen) {
 
 	} else if (pt == Utils::enumPieces::king) {
