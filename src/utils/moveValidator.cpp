@@ -216,9 +216,90 @@ std::vector<Utils::enumSquare> MoveValidator::calculatePath() {
 			}
 		}
 	} else if (pt == Utils::enumPieces::queen) {
-
+		if(startingRank == finalRank) {
+			// Horizontal movement
+			if(move.getFrom() > move.getTo()) {
+				// west
+				for(int i{move.getFrom() - 1}; i >= move.getTo(); i--) {
+					path.push_back(static_cast<Utils::enumSquare>(i));
+				}
+			} else {
+				// east
+				for(int i{move.getFrom() + 1}; i <= move.getTo(); i++) {
+					path.push_back(static_cast<Utils::enumSquare>(i));
+				}
+			}
+		} else if (startingFile == finalFile) {
+			// Vertical movement
+			if(move.getFrom() > move.getTo()) {
+				// sout
+				for(int i{move.getFrom() - 8}; i >= move.getTo(); i -= 8) {
+					path.push_back(static_cast<Utils::enumSquare>(i));
+				}
+			} else {
+				// nort
+				for(int i{move.getFrom() + 8}; i <= move.getTo(); i += 8) {
+					path.push_back(static_cast<Utils::enumSquare>(i));
+				}
+			}
+		} else {
+			// Diagonal
+			if((std::abs(move.getFrom() - move.getTo()) % 9) == 0) {
+				if(move.getFrom() > move.getTo()) {
+					// noEa
+					for(int i{move.getFrom() - 9}; i >= move.getTo(); i -= 9) {
+						path.push_back(static_cast<Utils::enumSquare>(i));
+					}
+				} else {
+					// soWe
+					for(int i{move.getFrom() + 9}; i <= move.getTo(); i += 9) {
+						path.push_back(static_cast<Utils::enumSquare>(i));
+					}
+				}
+			} else if ((std::abs(move.getFrom() - move.getTo()) % 7) == 0) {
+				if(move.getFrom() > move.getTo()) {
+					// noWe
+					for(int i{move.getFrom() - 7}; i >= move.getTo(); i -= 7) {
+						path.push_back(static_cast<Utils::enumSquare>(i));
+					}
+				} else {
+					// soEa
+					for(int i{move.getFrom() + 7}; i <= move.getTo(); i += 7) {
+						path.push_back(static_cast<Utils::enumSquare>(i));
+					}
+				}
+			}
+		}
 	} else if (pt == Utils::enumPieces::king) {
-
+		if(startingRank == finalRank) {
+			// Horizontal movement
+			if(std::abs(move.getTo() - move.getFrom()) == 1) {
+				path.push_back(static_cast<Utils::enumSquare>(move.getTo()));
+			} else {
+				// Only one square
+				throw -1;
+			}
+		} else if (startingFile == finalFile) {
+			// Vertical movement
+			if(std::abs(move.getFrom() - move.getTo()) == 8) {
+				std::cout << "Pdsdfasdsds\n";
+				path.push_back(static_cast<Utils::enumSquare>(move.getTo()));
+			} else {
+				// Only one square
+				throw -1;
+			}
+		} else {
+			if(std::abs(finalFile - startingFile) != 1) {
+				// more than one square
+				throw -1;
+			}
+			// Diagonal
+			if((std::abs(move.getFrom() - move.getTo()) % 9) == 0) {
+				path.push_back(static_cast<Utils::enumSquare>(move.getTo()));
+			} else if ((std::abs(move.getFrom() - move.getTo()) % 7) == 0) {
+				path.push_back(static_cast<Utils::enumSquare>(move.getTo()));
+			}
+		}
 	}
 	return path;
 }

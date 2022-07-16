@@ -9,6 +9,8 @@ int main() {
 	game.makeMove(Utils::enumPieces::rook, 56, 63, Utils::flagsType::quietMove);
 	game.makeMove(Utils::enumPieces::bishop, 5, 23, Utils::flagsType::quietMove);
 	game.makeMove(Utils::enumPieces::pawn, 48, 32, Utils::flagsType::quietMove);
+	game.makeMove(Utils::enumPieces::queen, 4, 3, Utils::flagsType::quietMove);
+	game.makeMove(Utils::enumPieces::king, 60, 61, Utils::flagsType::quietMove);
 
 	return 0;
 }
