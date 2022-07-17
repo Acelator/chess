@@ -17,12 +17,15 @@ class Game {
 private:
 	Player white;
 	Player black;
+	// TODO: Change to m_board
 	Board m_Board{};
 
 	int turnCount{1};
 	bool currentTurn{};
 
 	void newTurn();
+
+	void determineMovementType(Move& move);
 public:
 	Game() : white(Utils::Color::whitePLayer), black(Utils::Color::blackPlayer) {
 		// White starts

@@ -14,15 +14,23 @@ Utils::enumPieces Move::getPieceType() {
 
 // Utility
 bool Move::isCapture() {
-	std::cout << "Color: "<<  pj.getPlayerColor() <<'\n';
-//	return ((this->flags >> 2) == 1) ? true : false;
-	return false;
+	return this->capture;
 };
 
+bool Move::isCastle() {
+	return this->castle;
+}
+
 bool Move::isPromotion() {
-	//return ((this->flags >> 3) == 1) ? true : false;
-	return false;
+	return this->promotion;
 };
+
+
+void Move::setUpFlags(bool castle, bool capture) {
+	this->castle = castle;
+	this->capture = capture;
+}
+
 
 int Move::obtainFileFromSquare(std::uint_fast8_t square) {
 	float division = (static_cast<float>(square) / 8);

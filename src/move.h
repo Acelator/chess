@@ -15,6 +15,10 @@ private:
 
 	Utils::enumPieces pieceToPromoteTo{};
 
+	bool promotion;
+	bool castle;
+	bool capture;
+
 public:
 	// Allow to update "to" and "from" after initilization???
 	Move(Utils::enumPieces piece, Player &player, std::uint_fast8_t origin, std::uint_fast8_t destination) : pt(piece), pj(player), from(origin), to(destination)
@@ -24,7 +28,7 @@ public:
 
 	Move(Utils::enumPieces piece, Player &player, std::uint_fast8_t origin, std::uint_fast8_t destination, Utils::enumPieces promotion) : pt(piece), pj(player), from(origin), to(destination), pieceToPromoteTo{promotion}
 	{
-
+		this->promotion = true;
 	}
 
 	// Return string (Ex. A1 or 1 (square number)) ??
@@ -33,7 +37,11 @@ public:
 	Utils::enumPieces getPieceType();
 
 	bool isCapture();
+	// After we know that castle is impossible don't check again
+	bool isCastle();
 	bool isPromotion();
+
+	void setUpFlags(bool castle, bool capture);
 
 	// Takes a square in LERF notation and convert it into the number of the file or of the rank
 	// TODO: Remove as a member function??

@@ -8,13 +8,21 @@ bool MoveValidator::validate() {
 	// IMPORTANT
 	U64 piece = (static_cast<std::uint_fast64_t>(1) << move.getFrom());
 	bool condition = ((piece & pieceBoardOfCurrentPlayer) != 0);
+	
+	if(move.isCastle()) {
+		if(this->isCastleValid()) {
+
+		} else {
+			return false;
+		}
+	}
 
 	if (!condition) {
 		// The piece is not there
 		// TODO: Add exception
 		return false;
 	}
-
+	
 	// MoveValidator.isCheck();
 	std::vector<Utils::enumSquare> path{};
 
@@ -254,7 +262,6 @@ std::vector<Utils::enumSquare> MoveValidator::calculatePath() {
 		} else if (startingFile == finalFile) {
 			// Vertical movement
 			if(std::abs(move.getFrom() - move.getTo()) == 8) {
-				std::cout << "Pdsdfasdsds\n";
 				path.push_back(static_cast<Utils::enumSquare>(move.getTo()));
 			} else {
 				// Only one square
@@ -275,3 +282,8 @@ std::vector<Utils::enumSquare> MoveValidator::calculatePath() {
 	}
 	return path;
 }
+
+bool MoveValidator::isCastleValid() {
+	return false;
+}
+
