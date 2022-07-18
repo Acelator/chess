@@ -18,7 +18,7 @@ private:
 	Player white;
 	Player black;
 	// TODO: Change to m_board
-	Board m_Board{};
+	Board m_board{};
 
 	int turnCount{1};
 	bool currentTurn{};

@@ -1,5 +1,4 @@
 #include "game.h"
-#include <ios>
 
 void Game::newTurn() {
 	this->turnCount++;
@@ -29,8 +28,8 @@ void Game::determineMovementType(Move &move) {
 	bool castle{false};
 	
 	// Get a bitboard of the current player
-	U64 currentPlayerBoard = this->m_Board.getAllPiecesOfAGivenPlayer(this->getCurrentPlayer());
-	U64 otherPlayerBoard = this->m_Board.getAllPiecesOfAGivenPlayer(this->getNextPlayer());
+	U64 currentPlayerBoard = this->m_board.getAllPiecesOfAGivenPlayer(this->getCurrentPlayer());
+	U64 otherPlayerBoard = this->m_board.getAllPiecesOfAGivenPlayer(this->getNextPlayer());
 
 	U64 toSquare = static_cast<std::uint_fast64_t>(1) << move.getTo();
 
@@ -39,7 +38,7 @@ void Game::determineMovementType(Move &move) {
 		if((pt == Utils::enumPieces::rook) || (pt == Utils::enumPieces::king)) {
 			if (pt == Utils::enumPieces::rook) {
 				// The piece must be moved to the king
-				U64 bitboardOfKings{this->m_Board.getPieceSet(Utils::enumPieces::king)};
+				U64 bitboardOfKings{this->m_board.getPieceSet(Utils::enumPieces::king)};
 				U64 kingBitboard{bitboardOfKings & currentPlayerBoard};
 
 				if((toSquare & kingBitboard) != 0) {
@@ -48,7 +47,7 @@ void Game::determineMovementType(Move &move) {
 			} else {
 				// King
 				// The piece must be moved to the rook
-				U64 bitboardOfRooks{this->m_Board.getPieceSet(Utils::enumPieces::rook)};
+				U64 bitboardOfRooks{this->m_board.getPieceSet(Utils::enumPieces::rook)};
 				U64 rookBitboard{bitboardOfRooks & currentPlayerBoard};
 
 				if((toSquare & rookBitboard) != 0) {
@@ -59,7 +58,6 @@ void Game::determineMovementType(Move &move) {
 	}
 
 	// Determine if is capture
-	// TODO: En passant
 	if((toSquare & otherPlayerBoard) != 0) {
 		capture = true;
 	}
@@ -83,11 +81,15 @@ U64 Game::makeMove(Utils::enumPieces pt, std::uint_fast8_t from, std::uint_fast8
 	this->determineMovementType(move);
 	
 	// Make param constants
-	MoveValidator validator = MoveValidator(this->m_Board, move, this->getCurrentPlayer());
+	MoveValidator validator = MoveValidator(this->m_board, move, this->getCurrentPlayer());
 	bool isValid = validator.validate();
 	std::cout << "Movement is: " << std::boolalpha << isValid << '\n';
-	this->m_Board.updateBoard(move, getCurrentPlayer());
-
-	this->newTurn();
-	return this->m_Board.getCompleteBoard();
+	
+	if(isValid) {
+		this->m_board.updateBoard(move, getCurrentPlayer());
+		this->newTurn();
+		return this->m_board.getCompleteBoard();
+	} else {
+		return 0;
+	}
 }

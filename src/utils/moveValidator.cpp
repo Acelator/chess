@@ -7,7 +7,6 @@ bool MoveValidator::validate() {
 	}
 
 	// Check if the piece is in the starting position
-	// TODO: Check both rook and king if castle
 	U64 pieceBoardOfCurrentPlayer{this->board.getPieceSetOfAGivenPlayer(move.getPieceType(), player)};
 
 	// IMPORTANT
@@ -85,7 +84,7 @@ std::vector<Utils::enumSquare> MoveValidator::calculatePath() {
 			} else if (verticalVector.size() > 2) {
 				// Pawn is trying to move further away than 2 squares
 				throw -1;
-			} else if (verticalVector.size() == 1) [[likely]] {
+			} else if (verticalVector.size() == 1) {
 				return verticalVector;
 			} else {
 				// Double pawn push
