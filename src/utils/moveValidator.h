@@ -15,6 +15,11 @@ private:
 
 	std::vector<Utils::enumSquare> calculatePath();
 
+	// Functions used by calculatePath()
+	std::vector<Utils::enumSquare> calculateVerticalMovement();
+	std::vector<Utils::enumSquare> calculateHorizontalMovement();
+	std::vector<Utils::enumSquare> calculateDiagonalMovement();
+
 public:
 	MoveValidator(Board& currentBoard, Move& movement, Player& player) : board(currentBoard), move(movement), player(player) {};
 
