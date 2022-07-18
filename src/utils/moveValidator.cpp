@@ -73,9 +73,10 @@ std::vector<Utils::enumSquare> MoveValidator::calculatePath() {
 			// TODO: Check if this works
 			// Dont rely on flags?? 
 			//if(!(move.getFlags() == Utils::flagsType::capture) || !(move.getFlags() == Utils::flagsType::epCapture)) {
+			if(!(move.isCapture())) {
 				// Piece is trying to go diagonally without capturing a piece
-			//	throw -1;
-			//}
+				throw -1;
+			}
 			// TODO: Implement board frame check (Don't allow movement by moving outside of the board)
 			// (Ej. from file 8 to 1)
 			if ((std::abs(finalFile - startingFile)) == 1 )  {

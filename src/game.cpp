@@ -59,9 +59,11 @@ void Game::determineMovementType(Move &move) {
 	}
 
 	// Determine if is capture
+	// TODO: En passant
 	if((toSquare & otherPlayerBoard) != 0) {
 		capture = true;
 	}
+	move.setUpFlags(castle, capture);
 }
 
 // Allow to pass piece to promote to
