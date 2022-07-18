@@ -17,12 +17,15 @@ class Game {
 private:
 	Player white;
 	Player black;
+	// TODO: Change to m_board
 	Board m_Board{};
 
 	int turnCount{1};
 	bool currentTurn{};
 
 	void newTurn();
+
+	void determineMovementType(Move& move);
 public:
 	Game() : white(Utils::Color::whitePLayer), black(Utils::Color::blackPlayer) {
 		// White starts
@@ -35,8 +38,7 @@ public:
 	Player& getNextPlayer();
 
 	// Allow "to" to be expressed in chess notation (ej. f4)
-	U64 makeMove(Utils::enumPieces pt, std::uint_fast8_t from, std::uint_fast8_t to, Utils::flagsType moveType);
-
+	U64 makeMove(Utils::enumPieces pt, std::uint_fast8_t from, std::uint_fast8_t to);
 };
 
 #endif

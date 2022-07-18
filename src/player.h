@@ -8,6 +8,7 @@
 
 class Player{
 	Utils::Color m_color;
+	bool canCastle{true};
 
 public:
 	Player(Utils::Color color) : m_color(color){};
@@ -16,6 +17,8 @@ public:
 
 	Utils::Color getPlayerColor();
 
+	void disallowCastle();
+	bool canPlayerCastle();
 };
 
 #endif

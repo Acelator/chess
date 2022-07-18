@@ -1,14 +1,6 @@
 #include "move.h"
 
-bool Move::isCapture() {
-	std::cout << "Color: "<<  pj.getPlayerColor() <<'\n';
-	return ((this->flags >> 2) == 1) ? true : false;
-};
-
-bool Move::isPromotion() {
-	return ((this->flags >> 3) == 1) ? true : false;
-};
-
+// Getters
 std::uint_fast8_t Move::getTo() {
 	return this->to;
 }
@@ -16,14 +8,29 @@ std::uint_fast8_t Move::getTo() {
 std::uint_fast8_t Move::getFrom() {
 	return this->from;
 }
-
-Utils::flagsType Move::getFlags() {
-	return this->flags;
-}
-
 Utils::enumPieces Move::getPieceType() {
 	return this->pt;
 }
+
+// Utility
+bool Move::isCapture() {
+	return this->capture;
+};
+
+bool Move::isCastle() {
+	return this->castle;
+}
+
+bool Move::isPromotion() {
+	return this->promotion;
+};
+
+
+void Move::setUpFlags(bool castle, bool capture) {
+	this->castle = castle;
+	this->capture = capture;
+}
+
 
 int Move::obtainFileFromSquare(std::uint_fast8_t square) {
 	float division = (static_cast<float>(square) / 8);

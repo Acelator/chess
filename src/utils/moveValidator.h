@@ -19,6 +19,7 @@ public:
 	MoveValidator(Board& currentBoard, Move& movement, Player& player) : board(currentBoard), move(movement), player(player) {};
 
 	bool validate();
+	bool isCastleValid();
 };
 
 #endif
