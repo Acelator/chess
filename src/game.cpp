@@ -34,6 +34,7 @@ void Game::determineMovementType(Move &move) {
 	U64 toSquare = static_cast<std::uint_fast64_t>(1) << move.getTo();
 
 	// Determine if is castle
+	// Right now we aren't able to support both sides independely
 	if(this->getCurrentPlayer().canPlayerCastle()) {
 		if((pt == Utils::enumPieces::rook) || (pt == Utils::enumPieces::king)) {
 			if (pt == Utils::enumPieces::rook) {

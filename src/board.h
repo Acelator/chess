@@ -1,7 +1,6 @@
 #ifndef CHESS_BOARD_H
 #define CHESS_BOARD_H
 
-#include <array>
 #include <iostream>
 
 #include "utils/utils.h"
@@ -40,6 +39,8 @@ public:
 	U64 getAllPiecesOfAGivenPlayer(Player &pj);
 
 	void updateBoard(Move& move, Player dpj);
+
+	friend std::ostream& operator<<(std::ostream &os, Board& board); 
 };
 
 

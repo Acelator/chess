@@ -5,6 +5,7 @@
 #include <array>
 #include <cstdint>
 #include <cmath>
+#include <string>
 
 using U64 = std::uint_fast64_t;
 
