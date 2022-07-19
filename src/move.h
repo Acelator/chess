@@ -35,6 +35,7 @@ public:
 	std::uint_fast8_t getTo();
 	std::uint_fast8_t getFrom();
 	Utils::enumPieces getPieceType();
+	Utils::enumPieces getPieceToPromoteTo();
 
 	bool isCapture();
 	// After we know that castle is impossible don't check again

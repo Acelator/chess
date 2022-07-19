@@ -26,11 +26,6 @@ public:
 		m_pieces[Utils::enumPieces::bishop] =  0x2400000000000024;
 		m_pieces[Utils::enumPieces::knight] =  0x4200000000000042;
 		m_pieces[Utils::enumPieces::rook]   =  0x8100000000000081;
-
-		// m_pieces[Utils::enumPieces::king]  =   0x0800000000000010;
-		// m_pieces[Utils::enumPieces::queen] =   0x1000000000000008;
-
-		// Reversed
 		m_pieces[Utils::enumPieces::queen] =   0x0800000000000010;
 		m_pieces[Utils::enumPieces::king]  =   0x1000000000000008;
 	}

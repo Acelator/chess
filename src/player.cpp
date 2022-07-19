@@ -12,3 +12,11 @@ void Player::disallowCastle() {
 bool Player::canPlayerCastle() {
 	return this->canCastle;
 }
+
+void Player::newLostPiece(Utils::enumPieces pt) {
+	this->m_lostPieces.push_back(pt);
+}
+
+std::vector<Utils::enumPieces> Player::getLostPieces() {
+	return this->m_lostPieces;
+}

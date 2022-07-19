@@ -12,6 +12,10 @@ Utils::enumPieces Move::getPieceType() {
 	return this->pt;
 }
 
+Utils::enumPieces Move::getPieceToPromoteTo() {
+	return this->pieceToPromoteTo;
+}
+
 // Utility
 bool Move::isCapture() {
 	return this->capture;

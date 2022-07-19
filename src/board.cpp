@@ -30,14 +30,35 @@ void Board::updateBoard(Move& move, Player pj) {
 
 	// input the new piece position
 	playerBoard |= finalPieceBitboard;
-	piecesBoard |= finalPieceBitboard;
-
-	std::cout << "Player: " << playerBoard << '\n';
-	std::cout << "Piece: " << piecesBoard << '\n';
 
 	// Save it
 	this->m_playerSet[pj.getPlayerColor()] = playerBoard;
-	this->m_pieces[move.getPieceType()] = piecesBoard;
+
+	if (move.isCapture()) {
+		U64 otherPlayerBoard{this->getCompleteBoard() ^ playerBoard};
+		pj.newLostPiece(move.getPieceType());
+		// Change???
+		if(pj.getPlayerColor() == Utils::Color::whitePLayer) {
+			this->m_playerSet[Utils::Color::blackPlayer] = otherPlayerBoard;
+		} else {
+			this->m_playerSet[Utils::Color::whitePLayer] = otherPlayerBoard;
+		}
+	}
+
+	if (move.isPromotion()) {
+		// Save the bitboard of the intial piece without the promoted one
+		this->m_pieces[move.getPieceType()] = piecesBoard;
+
+		// Add the new promoted piece to its corresponding bitboard
+		U64 promotedPieceBitboard{this->getPieceSet(move.getPieceToPromoteTo())};
+		promotedPieceBitboard |= finalPieceBitboard;
+		this->m_pieces[move.getPieceToPromoteTo()] = promotedPieceBitboard;
+
+	} else {
+		// input the new piece position
+		piecesBoard |= finalPieceBitboard;
+		this->m_pieces[move.getPieceType()] = piecesBoard;
+	}
 }
 
 U64 Board::mirrorHorizontal (U64 x) {
@@ -55,6 +76,7 @@ std::ostream& operator<<(std::ostream &os, Board& board) {
 	os << "Board expresed as int: " << board.getCompleteBoard() << '\n';
 	os << '|';
 
+	// Border represents when we should make a break in the current line
 	int border{56};
 	for (int i{63}; i >= 0; i--) {
 		if(((bitboard & (static_cast<unsigned long>(0x1) << i)) != 0)) {

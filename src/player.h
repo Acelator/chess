@@ -10,6 +10,7 @@ class Player{
 	Utils::Color m_color;
 	bool canCastle{true};
 
+	std::vector<Utils::enumPieces> m_lostPieces{};
 public:
 	Player(Utils::Color color) : m_color(color){};
 	// Determine the problem
@@ -19,6 +20,9 @@ public:
 
 	void disallowCastle();
 	bool canPlayerCastle();
+
+	void newLostPiece(Utils::enumPieces pt);
+	std::vector<Utils::enumPieces> getLostPieces();
 };
 
 #endif

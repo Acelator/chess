@@ -39,9 +39,11 @@ bool MoveValidator::validate() {
 	}
 	// Represents the path that the piece follow
 	U64 movementBoard{};
-	for (auto i : path) {
+	for (const auto &i : path) {
+		if(move.isCapture() && (i == path.back())) {
+			break;
+		}
 		U64 currentSquare = (static_cast<std::uint_fast64_t>(1) << i);
-		std::cout << "Current: " << currentSquare << '\n';
 		movementBoard = (movementBoard | currentSquare);
 	}
 

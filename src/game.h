@@ -2,9 +2,6 @@
 #define CHESS_GAME_H
 
 // Make sure libraries are only compiled once
-#include <cstdint>
-#include <iostream>
-
 #include "utils/utils.h"
 
 #include "board.h"

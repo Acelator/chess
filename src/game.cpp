@@ -66,18 +66,8 @@ void Game::determineMovementType(Move &move) {
 }
 
 // Allow to pass piece to promote to
+// TODO: Update to UCI (Universal Chess Interface)
 U64 Game::makeMove(Utils::enumPieces pt, std::uint_fast8_t from, std::uint_fast8_t to) {
-	// Get all the given pieces of type from a player
-	//U64 ptPieces{this->m_Board.getPieceSetOfAGivenPlayer(pt, color)};
-	//U64 pieceToMove{ptPieces & from};
-
-	// Delete the old position of the piece
-	//ptPieces = (ptPieces ^ pieceToMove);
-
-	// Set the new position
-	//ptPieces = (ptPieces | to);
-
-	//this->m_Board.updateBoard(pt, color, ptPieces);
 	Move move = Move(pt, getCurrentPlayer(), from, to);
 	this->determineMovementType(move);
 	
