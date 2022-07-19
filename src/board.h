@@ -13,6 +13,8 @@ class Board{
 	std::array<U64, 6> m_pieces{};
 	std::array<U64, 2> m_playerSet{};
 
+	U64 mirrorHorizontal (U64 x);
+
 public:
 	Board() {
 		// Little-Endian Rank File (LERF) Mapping

@@ -89,8 +89,11 @@ U64 Game::makeMove(Utils::enumPieces pt, std::uint_fast8_t from, std::uint_fast8
 	if(isValid) {
 		this->m_board.updateBoard(move, getCurrentPlayer());
 		this->newTurn();
+		std::cout << this->m_board << '\n';
+		std::cout << "-------------------------\n";
 		return this->m_board.getCompleteBoard();
 	} else {
+		std::cout << "-------------------------\n";
 		return 0;
 	}
 }

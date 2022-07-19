@@ -17,7 +17,6 @@ class Game {
 private:
 	Player white;
 	Player black;
-	// TODO: Change to m_board
 	Board m_board{};
 
 	int turnCount{1};
