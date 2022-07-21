@@ -12,7 +12,7 @@ bool MoveValidator::validate() {
 	// IMPORTANT
 	U64 piece = (static_cast<std::uint_fast64_t>(1) << move.getFrom());
 	bool isPieceThere = ((piece & pieceBoardOfCurrentPlayer) != 0);
-	
+
 	if(move.isCastle()) {
 		if(this->isCastleValid()) {
 

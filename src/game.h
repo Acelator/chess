@@ -16,11 +16,11 @@ private:
 	Player black;
 	Board m_board{};
 
-	int turnCount{1};
+	int halfTurnCount{1};
+	int fiftyMoveCount{0};
 	bool currentTurn{};
 
-	void newTurn();
-
+	void newHalfTurn(Move &move);
 	void determineMovementType(Move& move);
 public:
 	Game() : white(Utils::Color::whitePLayer), black(Utils::Color::blackPlayer) {
@@ -30,7 +30,6 @@ public:
 	
 	// Return the player that has the current turn
 	Player& getCurrentPlayer();
-
 	Player& getNextPlayer();
 
 	// Allow "to" to be expressed in chess notation (ej. f4)

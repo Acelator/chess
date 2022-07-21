@@ -1,7 +1,20 @@
 #include "game.h"
 
-void Game::newTurn() {
-	this->turnCount++;
+void Game::newHalfTurn(Move &move) {
+	// Check if the fifty-move rule isn't broken
+	// If move is number 50 allow the player to determine if a draw must be done
+	if(move.isCapture() || move.getPieceType() == Utils::enumPieces::pawn) {
+		this->fiftyMoveCount = 0;
+	} else {
+		this->fiftyMoveCount++;
+	}
+	if (this->fiftyMoveCount == 75) {
+		// Draw is mandatorily applied (Seventy-five-move rule)
+		throw -1;
+
+	}
+
+	this->halfTurnCount++;
 	this->currentTurn = (!this->currentTurn);
 }
 
@@ -78,7 +91,13 @@ U64 Game::makeMove(Utils::enumPieces pt, std::uint_fast8_t from, std::uint_fast8
 	
 	if(isValid) {
 		this->m_board.updateBoard(move, getCurrentPlayer());
-		this->newTurn();
+		
+		try {
+			this->newHalfTurn(move);
+		} catch (int x) {
+			// Draw
+			throw -1;
+		}
 		std::cout << this->m_board << '\n';
 		std::cout << "-------------------------\n";
 		return this->m_board.getCompleteBoard();
@@ -87,3 +106,4 @@ U64 Game::makeMove(Utils::enumPieces pt, std::uint_fast8_t from, std::uint_fast8
 		return 0;
 	}
 }
+

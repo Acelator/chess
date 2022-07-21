@@ -15,7 +15,7 @@ private:
 
 	Utils::enumPieces pieceToPromoteTo{};
 
-	bool promotion;
+	bool promotion{false};
 	bool castle;
 	bool capture;
 
