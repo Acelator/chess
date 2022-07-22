@@ -13,6 +13,7 @@ class Board{
 	std::array<U64, 6> m_pieces{};
 	std::array<U64, 2> m_playerSet{};
 
+	std::uint_fast8_t enPassantAllowedFile{0};
 	U64 mirrorHorizontal (U64 x);
 
 public:
@@ -35,7 +36,11 @@ public:
 	U64 getPieceSetOfAGivenPlayer(Utils::enumPieces pt, Player &pj);
 	U64 getAllPiecesOfAGivenPlayer(Player &pj);
 
-	void updateBoard(Move& move, Player dpj);
+	void updateBoard(Move& move, Player& currentPlayer, Player& nextPlayer);
+
+	std::uint_fast8_t getEnPassantAllowedFiles();
+	void newEnPassantOportunity(int file);
+	void restartEnPassant();
 
 	friend std::ostream& operator<<(std::ostream &os, Board& board); 
 };

@@ -29,10 +29,15 @@ bool Move::isPromotion() {
 	return this->promotion;
 };
 
+bool Move::isEnPassant() {
+	return this->enPassant;
+}
 
-void Move::setUpFlags(bool castle, bool capture) {
+
+void Move::setUpFlags(bool castle, bool capture, bool enPassant) {
 	this->castle = castle;
 	this->capture = capture;
+	this->enPassant = enPassant;
 }
 
 

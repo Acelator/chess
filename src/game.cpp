@@ -39,6 +39,7 @@ void Game::determineMovementType(Move &move) {
 
 	bool capture{false};
 	bool castle{false};
+	bool enPassant{false};
 	
 	// Get a bitboard of the current player
 	U64 currentPlayerBoard = this->m_board.getAllPiecesOfAGivenPlayer(this->getCurrentPlayer());
@@ -75,7 +76,19 @@ void Game::determineMovementType(Move &move) {
 	if((toSquare & otherPlayerBoard) != 0) {
 		capture = true;
 	}
-	move.setUpFlags(castle, capture);
+
+	// Determine if is en Passant
+	if ((this->m_board.getEnPassantAllowedFiles() != 0) && (move.getPieceType() == Utils::enumPieces::pawn)) {
+		if (capture) {
+			this->m_board.restartEnPassant();
+		} else if(move.obtainFileFromSquare(move.getTo()) == this->m_board.getEnPassantAllowedFiles()) {
+			enPassant = true;
+		}
+	} else if (this->m_board.getEnPassantAllowedFiles() != 0) {
+		this->m_board.restartEnPassant();
+	}
+
+	move.setUpFlags(castle, capture, enPassant);
 }
 
 // Allow to pass piece to promote to
@@ -90,7 +103,7 @@ U64 Game::makeMove(Utils::enumPieces pt, std::uint_fast8_t from, std::uint_fast8
 	std::cout << "Movement is: " << std::boolalpha << isValid << '\n';
 	
 	if(isValid) {
-		this->m_board.updateBoard(move, getCurrentPlayer());
+		this->m_board.updateBoard(move, getCurrentPlayer(), getNextPlayer());
 		
 		try {
 			this->newHalfTurn(move);

@@ -16,12 +16,14 @@ U64 Board::getAllPiecesOfAGivenPlayer(Player &pj) {
 	return this->m_playerSet[pj.getPlayerColor()];
 }
 
-void Board::updateBoard(Move& move, Player pj) {
+// TODO: Pass current player and the next one
+void Board::updateBoard(Move& move, Player& currentPlayer, Player& nextPlayer) {
 	U64 startingPieceBitboard = static_cast<unsigned long>(0x1) << move.getFrom();
 	U64 finalPieceBitboard = static_cast<unsigned long>(0x1) << move.getTo();
 
 	// Update player board
-	U64 playerBoard{this->getAllPiecesOfAGivenPlayer(pj)}; 
+	// Player board corresponds to the one that is currently performing a move
+	U64 playerBoard{this->getAllPiecesOfAGivenPlayer(currentPlayer)}; 
 	U64 piecesBoard{this->getPieceSet(move.getPieceType())};
 
 	// Delete from the starting position the piece moved
@@ -32,17 +34,12 @@ void Board::updateBoard(Move& move, Player pj) {
 	playerBoard |= finalPieceBitboard;
 
 	// Save it
-	this->m_playerSet[pj.getPlayerColor()] = playerBoard;
+	this->m_playerSet[currentPlayer.getPlayerColor()] = playerBoard;
 
 	if (move.isCapture()) {
 		U64 otherPlayerBoard{this->getCompleteBoard() ^ playerBoard};
-		pj.newLostPiece(move.getPieceType());
-		// Change???
-		if(pj.getPlayerColor() == Utils::Color::whitePLayer) {
-			this->m_playerSet[Utils::Color::blackPlayer] = otherPlayerBoard;
-		} else {
-			this->m_playerSet[Utils::Color::whitePLayer] = otherPlayerBoard;
-		}
+		nextPlayer.newLostPiece(move.getPieceType());
+		this->m_playerSet[nextPlayer.getPlayerColor()] = otherPlayerBoard;
 	}
 
 	if (move.isPromotion()) {
@@ -58,6 +55,33 @@ void Board::updateBoard(Move& move, Player pj) {
 		// input the new piece position
 		piecesBoard |= finalPieceBitboard;
 		this->m_pieces[move.getPieceType()] = piecesBoard;
+	}
+
+	if (move.isEnPassant()) {
+		U64 otherPlayerBoard{this->getCompleteBoard() ^ playerBoard};
+
+		// input the new piece position
+		piecesBoard |= finalPieceBitboard;
+
+		U64 positionOfPieceToEat{};
+		if (currentPlayer.getPlayerColor() == Utils::Color::whitePLayer) {
+			positionOfPieceToEat = finalPieceBitboard >> 8;
+		} else {
+			positionOfPieceToEat = finalPieceBitboard << 8;
+		}
+
+		// Always a pawn
+		nextPlayer.newLostPiece(Utils::enumPieces::pawn);
+
+		// Delete the eaten piece
+		otherPlayerBoard ^= positionOfPieceToEat;
+		piecesBoard ^= positionOfPieceToEat;
+
+		// Saves to the bitboard
+		this->m_pieces[move.getPieceType()] = piecesBoard;
+		this->m_playerSet[nextPlayer.getPlayerColor()] = otherPlayerBoard;
+
+		this->restartEnPassant();
 	}
 }
 
@@ -93,4 +117,18 @@ std::ostream& operator<<(std::ostream &os, Board& board) {
 		}
 	}
 	return os;
+}
+
+void Board::newEnPassantOportunity(int file) {
+	if ((file <= 8) && (file >= 1)) {
+		this->enPassantAllowedFile = file;
+	}
+}
+
+std::uint_fast8_t Board::getEnPassantAllowedFiles() {
+	return this->enPassantAllowedFile;
+}
+
+void Board::restartEnPassant() {
+	this->enPassantAllowedFile = 0;
 }

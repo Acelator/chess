@@ -18,6 +18,7 @@ private:
 	bool promotion{false};
 	bool castle;
 	bool capture;
+	bool enPassant{false};
 
 public:
 	// Allow to update "to" and "from" after initilization???
@@ -41,8 +42,9 @@ public:
 	// After we know that castle is impossible don't check again
 	bool isCastle();
 	bool isPromotion();
+	bool isEnPassant();
 
-	void setUpFlags(bool castle, bool capture);
+	void setUpFlags(bool castle, bool capture, bool enPassant);
 
 	// Takes a square in LERF notation and convert it into the number of the file or of the rank
 	// TODO: Remove as a member function??

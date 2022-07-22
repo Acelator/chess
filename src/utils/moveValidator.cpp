@@ -71,14 +71,13 @@ std::vector<Utils::enumSquare> MoveValidator::calculatePath() {
 
 	switch (pt) {
 		case (Utils::enumPieces::pawn): {
-			// TODO: Implement en passant
-			if(move.isCapture()) {
+			if(move.isCapture() || move.isEnPassant()) {
 				auto diagonalVector{this->calculateDiagonalMovement()};
 				if(diagonalVector.empty()) {
 					throw -1;
 				}
 				return  diagonalVector;
-			}
+			} 
 
 			auto verticalVector{this->calculateVerticalMovement()};
 			if (verticalVector.empty()) {
@@ -90,9 +89,12 @@ std::vector<Utils::enumSquare> MoveValidator::calculatePath() {
 				return verticalVector;
 			} else {
 				// Double pawn push
+				// En passant can be performed by the other player in his next turn
 				if ((move.obtainRankFromSquare(move.getFrom()) == 2) && (player.getPlayerColor() == Utils::Color::whitePLayer)) {
+					this->board.newEnPassantOportunity(startingFile);	
 					return verticalVector;
 				} else if ((move.obtainRankFromSquare(move.getFrom()) == 7) && (player.getPlayerColor() == Utils::Color::blackPlayer)) {
+					this->board.newEnPassantOportunity(startingFile);	
 					return verticalVector;
 				} else {
 					// Pawn isn't in the intial position, so the double push isn't possible
@@ -158,7 +160,6 @@ std::vector<Utils::enumSquare> MoveValidator::calculatePath() {
 			break;
 		}
 		case (Utils::enumPieces::king): {
-			std::cout << "GODDDD\n";
 			auto horizontalVector{this->calculateHorizontalMovement()};
 			auto verticalVector{this->calculateVerticalMovement()};
 			auto diagonalVector{this->calculateDiagonalMovement()};
