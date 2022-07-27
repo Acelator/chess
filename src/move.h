@@ -24,9 +24,7 @@ public:
     Move(Utils::enumPieces piece, Player &player, std::uint_fast8_t origin, std::uint_fast8_t destination) : pt(piece),
                                                                                                              pj(player),
                                                                                                              from(origin),
-                                                                                                             to(destination) {
-
-    }
+                                                                                                             to(destination) {}
 
     Move(Utils::enumPieces piece, Player &player, std::uint_fast8_t origin, std::uint_fast8_t destination,
          Utils::enumPieces promotion) : pt(piece), pj(player), from(origin), to(destination),

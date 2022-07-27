@@ -1,33 +1,31 @@
 #ifndef CHESS_GAME_H
 #define CHESS_GAME_H
 
-// Make sure libraries are only compiled once
+#include "utils/moveValidator.h"
 #include "utils/utils.h"
 
+#include "player.h"
 #include "board.h"
 #include "move.h"
 
-#include "utils/moveValidator.h"
-#include "player.h"
-
 class Game {
 private:
-    Player white;
-    Player black;
+    Player m_white;
+    Player m_black;
     Board m_board{};
 
-    int halfTurnCount{1};
-    int fiftyMoveCount{0};
-    bool currentTurn{};
+    int m_halfTurnCount{1};
+    int m_fiftyMoveCount{0};
+    bool m_currentTurn{};
 
     void newHalfTurn(Move &move);
 
     void determineMovementType(Move &move);
 
 public:
-    Game() : white(Utils::Color::whitePLayer), black(Utils::Color::blackPlayer) {
+    Game() : m_white(Utils::Color::whitePLayer), m_black(Utils::Color::blackPlayer) {
         // White starts
-        currentTurn = true;
+        m_currentTurn = true;
     }
 
     // Return the player that has the current turn
@@ -35,7 +33,7 @@ public:
 
     Player &getNextPlayer();
 
-    // Allow "to" to be expressed in chess notation (ej. f4)
+    // Allow "to" to be expressed in algebraic notation
     U64 makeMove(Utils::enumPieces pt, std::uint_fast8_t from, std::uint_fast8_t to);
 };
 

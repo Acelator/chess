@@ -1,5 +1,4 @@
 #include "moveValidator.h"
-#include <vector>
 
 bool MoveValidator::validate() {
     if (move.getFrom() == move.getTo()) {
@@ -9,7 +8,6 @@ bool MoveValidator::validate() {
     // Check if the piece is in the starting position
     U64 pieceBoardOfCurrentPlayer{this->board.getPieceSetOfAGivenPlayer(move.getPieceType(), player)};
 
-    // IMPORTANT
     U64 piece = (static_cast<std::uint_fast64_t>(1) << move.getFrom());
     bool isPieceThere = ((piece & pieceBoardOfCurrentPlayer) != 0);
 
