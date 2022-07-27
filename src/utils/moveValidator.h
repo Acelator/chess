@@ -9,22 +9,25 @@
 
 class MoveValidator {
 private:
-	Board& board;
-	Move& move;
-	Player& player;
+    Board &board;
+    Move &move;
+    Player &player;
 
-	std::vector<Utils::enumSquare> calculatePath();
+    std::vector<Utils::enumSquare> calculatePath();
 
-	// Functions used by calculatePath()
-	std::vector<Utils::enumSquare> calculateVerticalMovement();
-	std::vector<Utils::enumSquare> calculateHorizontalMovement();
-	std::vector<Utils::enumSquare> calculateDiagonalMovement();
+    // Functions used by calculatePath()
+    std::vector<Utils::enumSquare> calculateVerticalMovement();
+
+    std::vector<Utils::enumSquare> calculateHorizontalMovement();
+
+    std::vector<Utils::enumSquare> calculateDiagonalMovement();
 
 public:
-	MoveValidator(Board& currentBoard, Move& movement, Player& player) : board(currentBoard), move(movement), player(player) {};
+    MoveValidator(Board &currentBoard, Move &movement, Player &player) : board(currentBoard), move(movement), player(player) {};
 
-	bool validate();
-	bool isCastleValid();
+    bool validate();
+
+    bool isCastleValid();
 };
 
 #endif

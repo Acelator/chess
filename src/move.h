@@ -4,52 +4,61 @@
 #include "utils/utils.h"
 #include "player.h"
 
-class Move
-{
+class Move {
 private:
-	Utils::enumPieces pt;
-	Player &pj;
+    Utils::enumPieces pt;
+    Player &pj;
 
-	std::uint_fast8_t from;
-	std::uint_fast8_t to;
+    std::uint_fast8_t from;
+    std::uint_fast8_t to;
 
-	Utils::enumPieces pieceToPromoteTo{};
+    Utils::enumPieces pieceToPromoteTo{};
 
-	bool promotion{false};
-	bool castle;
-	bool capture;
-	bool enPassant{false};
+    bool promotion{false};
+    bool castle{false};
+    bool capture{false};
+    bool enPassant{false};
 
 public:
-	// Allow to update "to" and "from" after initilization???
-	Move(Utils::enumPieces piece, Player &player, std::uint_fast8_t origin, std::uint_fast8_t destination) : pt(piece), pj(player), from(origin), to(destination)
-	{
+    // Allow to update "to" and "from" after initialization???
+    Move(Utils::enumPieces piece, Player &player, std::uint_fast8_t origin, std::uint_fast8_t destination) : pt(piece),
+                                                                                                             pj(player),
+                                                                                                             from(origin),
+                                                                                                             to(destination) {
 
-	}
+    }
 
-	Move(Utils::enumPieces piece, Player &player, std::uint_fast8_t origin, std::uint_fast8_t destination, Utils::enumPieces promotion) : pt(piece), pj(player), from(origin), to(destination), pieceToPromoteTo{promotion}
-	{
-		this->promotion = true;
-	}
+    Move(Utils::enumPieces piece, Player &player, std::uint_fast8_t origin, std::uint_fast8_t destination,
+         Utils::enumPieces promotion) : pt(piece), pj(player), from(origin), to(destination),
+                                        pieceToPromoteTo{promotion} {
+        this->promotion = true;
+    }
 
-	// Return string (Ex. A1 or 1 (square number)) ??
-	std::uint_fast8_t getTo();
-	std::uint_fast8_t getFrom();
-	Utils::enumPieces getPieceType();
-	Utils::enumPieces getPieceToPromoteTo();
+    // Return string (Ex. A1 or 1 (square number)) ??
+    std::uint_fast8_t getTo() const;
 
-	bool isCapture();
-	// After we know that castle is impossible don't check again
-	bool isCastle();
-	bool isPromotion();
-	bool isEnPassant();
+    std::uint_fast8_t getFrom() const;
 
-	void setUpFlags(bool castle, bool capture, bool enPassant);
+    Utils::enumPieces getPieceType() const;
 
-	// Takes a square in LERF notation and convert it into the number of the file or of the rank
-	// TODO: Remove as a member function??
-	int obtainRankFromSquare(std::uint_fast8_t square);
-	int obtainFileFromSquare(std::uint_fast8_t square);
+    Utils::enumPieces getPieceToPromoteTo() const;
+
+    bool isCapture() const;
+
+    // After we know that castle is impossible don't check again
+    bool isCastle() const;
+
+    bool isPromotion() const;
+
+    bool isEnPassant() const;
+
+    void setUpFlags(bool isCastle, bool isCapture, bool isEnPassant);
+
+    // Takes a square in LERF notation and convert it into the number of the file or of the rank
+    // TODO: Remove as a member function??
+    int obtainRankFromSquare(std::uint_fast8_t square);
+
+    int obtainFileFromSquare(std::uint_fast8_t square);
 };
 
 #endif
