@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include "utils/utils.h"
-#include "move.h"
+#include "movement/move.h"
 #include "player.h"
 
 // Denser board
@@ -12,6 +12,9 @@ class Board {
     // The array represents each color independent pieces bitboards
     std::array<U64, 6> m_pieces{};
     std::array<U64, 2> m_playerSet{};
+
+    // Attack vector
+    std::array<U64, 2> m_attackVector{};
 
     std::uint_fast8_t enPassantAllowedFile{0};
 
@@ -32,6 +35,7 @@ public:
         m_pieces[Utils::enumPieces::king] = 0x1000000000000008;
     }
 
+    // Board related
     U64 getCompleteBoard() const;
 
     U64 getPieceSet(Utils::enumPieces pt) const;
@@ -40,14 +44,23 @@ public:
 
     U64 getAllPiecesOfAGivenPlayer(Player &pj) const;
 
-    void updateBoard(Move &move, Player &currentPlayer, Player &nextPlayer);
-
     std::uint_fast8_t getEnPassantAllowedFiles() const;
 
+    void updateBoard(Move &move, Player &currentPlayer, Player &nextPlayer);
+
+    // Attacks vector
+    U64 getPlayerAttackVector(Player& pj) const;
+
+    U64 getOtherPlayerAttackVector(Player &pj) const;
+
+    void saveAttackVector(Player &pj, U64 attackVector);
+
+    // En Passant
     void newEnPassantOpportunity(int file);
 
     void restartEnPassant();
 
+    // Operator overload
     friend std::ostream &operator<<(std::ostream &os, Board &board);
 };
 

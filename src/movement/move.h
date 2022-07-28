@@ -1,8 +1,8 @@
 #ifndef CHESS_MOVE_H
 #define CHESS_MOVE_H
 
-#include "utils/utils.h"
-#include "player.h"
+#include "../utils/utils.h"
+#include "../player.h"
 
 class Move {
 private:

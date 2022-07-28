@@ -16,7 +16,38 @@ U64 Board::getAllPiecesOfAGivenPlayer(Player &pj) const {
     return this->m_playerSet[pj.getPlayerColor()];
 }
 
+std::uint_fast8_t Board::getEnPassantAllowedFiles() const {
+    return this->enPassantAllowedFile;
+}
+
+U64 Board::getPlayerAttackVector(Player &pj) const {
+    return this->m_attackVector[pj.getPlayerColor()];
+}
+
+U64 Board::getOtherPlayerAttackVector(Player &pj) const {
+    if (pj.getPlayerColor() == Utils::Color::whitePLayer) {
+        return this->m_attackVector[Utils::Color::blackPlayer];
+    } else {
+        return this->m_attackVector[Utils::Color::whitePLayer];
+    }
+}
+
+void Board::saveAttackVector(Player &pj, U64 attackVector) {
+    this->m_attackVector[pj.getPlayerColor()] = attackVector;
+}
+
+void Board::newEnPassantOpportunity(int file) {
+    if ((file <= 8) && (file >= 1)) {
+        this->enPassantAllowedFile = file;
+    }
+}
+
+void Board::restartEnPassant() {
+    this->enPassantAllowedFile = 0;
+}
+
 // TODO: Pass current player and the next one
+// TODO: Implement castle
 void Board::updateBoard(Move &move, Player &currentPlayer, Player &nextPlayer) {
     U64 startingPieceBitboard = static_cast<unsigned long>(0x1) << move.getFrom();
     U64 finalPieceBitboard = static_cast<unsigned long>(0x1) << move.getTo();
@@ -116,18 +147,4 @@ std::ostream &operator<<(std::ostream &os, Board &board) {
         }
     }
     return os;
-}
-
-void Board::newEnPassantOpportunity(int file) {
-    if ((file <= 8) && (file >= 1)) {
-        this->enPassantAllowedFile = file;
-    }
-}
-
-std::uint_fast8_t Board::getEnPassantAllowedFiles() const {
-    return this->enPassantAllowedFile;
-}
-
-void Board::restartEnPassant() {
-    this->enPassantAllowedFile = 0;
 }

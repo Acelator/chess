@@ -1,12 +1,12 @@
 #ifndef CHESS_GAME_H
 #define CHESS_GAME_H
 
-#include "utils/moveValidator.h"
+#include "movement/moveValidator.h"
 #include "utils/utils.h"
 
 #include "player.h"
 #include "board.h"
-#include "move.h"
+#include "movement/move.h"
 
 class Game {
 private:
@@ -23,6 +23,7 @@ private:
     void determineMovementType(Move &move);
 
 public:
+    // TODO: Initialize attack vector when starting the game
     Game() : m_white(Utils::Color::whitePLayer), m_black(Utils::Color::blackPlayer) {
         // White starts
         m_currentTurn = true;

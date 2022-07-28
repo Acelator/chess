@@ -4,8 +4,9 @@
 #include <vector>
 
 #include "../board.h"
-#include "../move.h"
-#include "utils.h"
+#include "move.h"
+#include "../utils/utils.h"
+#include "path.h"
 
 class MoveValidator {
 private:
@@ -13,21 +14,14 @@ private:
     Move &move;
     Player &player;
 
-    std::vector<Utils::enumSquare> calculatePath();
-
-    // Functions used by calculatePath()
-    std::vector<Utils::enumSquare> calculateVerticalMovement();
-
-    std::vector<Utils::enumSquare> calculateHorizontalMovement();
-
-    std::vector<Utils::enumSquare> calculateDiagonalMovement();
-
 public:
     MoveValidator(Board &currentBoard, Move &movement, Player &player) : board(currentBoard), move(movement), player(player) {};
 
     bool validate();
 
-    bool isCastleValid();
+    bool isPlayerInCheck();
+
+    static bool isCastleValid();
 };
 
 #endif

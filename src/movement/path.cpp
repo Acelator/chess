@@ -1,61 +1,6 @@
-#include "moveValidator.h"
+#include "path.h"
 
-bool MoveValidator::validate() {
-    if (move.getFrom() == move.getTo()) {
-        return false;
-    }
-
-    // Check if the piece is in the starting position
-    U64 pieceBoardOfCurrentPlayer{this->board.getPieceSetOfAGivenPlayer(move.getPieceType(), player)};
-
-    U64 piece = (static_cast<std::uint_fast64_t>(1) << move.getFrom());
-    bool isPieceThere = ((piece & pieceBoardOfCurrentPlayer) != 0);
-
-    if (move.isCastle()) {
-        if (this->isCastleValid()) {
-
-        } else {
-            return false;
-        }
-    }
-
-    if (!isPieceThere) {
-        // The piece is not there
-        // TODO: Add exception
-        return false;
-    }
-
-    // MoveValidator.isCheck();
-    std::vector<Utils::enumSquare> path{};
-    try {
-        path = this->calculatePath();
-    } catch (int x) {
-        // TODO: Document possible exceptions
-        if (x == -1) {
-            return false;
-        }
-    }
-    // Represents the path that the piece follow
-    U64 movementBoard{};
-    for (const auto &i: path) {
-        if (move.isCapture() && (i == path.back())) {
-            break;
-        }
-        U64 currentSquare = (static_cast<std::uint_fast64_t>(1) << i);
-        movementBoard = (movementBoard | currentSquare);
-    }
-
-    std::cout << "complete: " << movementBoard << '\n';
-    auto completeBoard{this->board.getCompleteBoard()};
-
-    // No piece intersect during the movement
-    if ((completeBoard & movementBoard) == 0) {
-        return true;
-    }
-    return false;
-}
-
-std::vector<Utils::enumSquare> MoveValidator::calculatePath() {
+std::vector<Utils::enumSquare> Path::calculatePath() {
     auto pt = move.getPieceType();
     std::vector<Utils::enumSquare> path{};
 
@@ -70,17 +15,15 @@ std::vector<Utils::enumSquare> MoveValidator::calculatePath() {
     switch (pt) {
         case (Utils::enumPieces::pawn): {
             if (move.isCapture() || move.isEnPassant()) {
-                auto diagonalVector{this->calculateDiagonalMovement()};
+                auto diagonalVector{calculateDiagonalMovement()};
                 if (diagonalVector.empty()) {
                     throw -1;
                 }
                 return diagonalVector;
             }
 
-            auto verticalVector{this->calculateVerticalMovement()};
-            if (verticalVector.empty()) {
-                throw -1;
-            } else if (verticalVector.size() > 2) {
+            auto verticalVector{calculateVerticalMovement()};
+            if (verticalVector.empty() || verticalVector.size() > 2) {
                 // Pawn is trying to move further away than 2 squares
                 throw -1;
             } else if (verticalVector.size() == 1) {
@@ -88,11 +31,9 @@ std::vector<Utils::enumSquare> MoveValidator::calculatePath() {
             } else {
                 // Double pawn push
                 // En passant can be performed by the other player in his next turn
-                if ((move.obtainRankFromSquare(move.getFrom()) == 2) && (player.getPlayerColor() == Utils::Color::whitePLayer)) {
-                    this->board.newEnPassantOpportunity(startingFile);
-                    return verticalVector;
-                } else if ((move.obtainRankFromSquare(move.getFrom()) == 7) && (player.getPlayerColor() == Utils::Color::blackPlayer)) {
-                    this->board.newEnPassantOpportunity(startingFile);
+                if (((move.obtainRankFromSquare(move.getFrom()) == 2) && (player.getPlayerColor() == Utils::Color::whitePLayer)) ||
+                    ((move.obtainRankFromSquare(move.getFrom()) == 7) && (player.getPlayerColor() == Utils::Color::blackPlayer))) {
+                    board.newEnPassantOpportunity(startingFile);
                     return verticalVector;
                 } else {
                     // Pawn isn't in the initial position, so the double push isn't possible
@@ -101,7 +42,7 @@ std::vector<Utils::enumSquare> MoveValidator::calculatePath() {
             }
         }
         case (Utils::enumPieces::bishop): {
-            auto diagonalVector{this->calculateDiagonalMovement()};
+            auto diagonalVector{calculateDiagonalMovement()};
 
             if (diagonalVector.empty()) {
                 throw -1;
@@ -109,8 +50,8 @@ std::vector<Utils::enumSquare> MoveValidator::calculatePath() {
             return diagonalVector;
         }
         case (Utils::enumPieces::rook): {
-            auto horizontalVector{this->calculateHorizontalMovement()};
-            auto verticalVector{this->calculateVerticalMovement()};
+            auto horizontalVector{calculateHorizontalMovement()};
+            auto verticalVector{calculateVerticalMovement()};
 
             if (horizontalVector.empty() && verticalVector.empty()) {
                 throw -1;
@@ -136,9 +77,9 @@ std::vector<Utils::enumSquare> MoveValidator::calculatePath() {
             return path;
         }
         case (Utils::enumPieces::queen): {
-            auto horizontalVector{this->calculateHorizontalMovement()};
-            auto verticalVector{this->calculateVerticalMovement()};
-            auto diagonalVector{this->calculateDiagonalMovement()};
+            auto horizontalVector{calculateHorizontalMovement()};
+            auto verticalVector{calculateVerticalMovement()};
+            auto diagonalVector{calculateDiagonalMovement()};
 
             if (!horizontalVector.empty()) {
                 for (const auto &i: horizontalVector) {
@@ -156,9 +97,9 @@ std::vector<Utils::enumSquare> MoveValidator::calculatePath() {
             break;
         }
         case (Utils::enumPieces::king): {
-            auto horizontalVector{this->calculateHorizontalMovement()};
-            auto verticalVector{this->calculateVerticalMovement()};
-            auto diagonalVector{this->calculateDiagonalMovement()};
+            auto horizontalVector{calculateHorizontalMovement()};
+            auto verticalVector{calculateVerticalMovement()};
+            auto diagonalVector{calculateDiagonalMovement()};
 
             if (!horizontalVector.empty()) {
                 for (const auto &i: horizontalVector) {
@@ -183,7 +124,7 @@ std::vector<Utils::enumSquare> MoveValidator::calculatePath() {
     return path;
 }
 
-std::vector<Utils::enumSquare> MoveValidator::calculateVerticalMovement() {
+std::vector<Utils::enumSquare> Path::calculateVerticalMovement() {
     std::vector<Utils::enumSquare> path{};
 
     // Determine the file of the starting and final square
@@ -209,7 +150,7 @@ std::vector<Utils::enumSquare> MoveValidator::calculateVerticalMovement() {
     return path;
 }
 
-std::vector<Utils::enumSquare> MoveValidator::calculateHorizontalMovement() {
+std::vector<Utils::enumSquare> Path::calculateHorizontalMovement() {
     std::vector<Utils::enumSquare> path{};
 
     // Determine the rank of the starting and final square
@@ -235,7 +176,7 @@ std::vector<Utils::enumSquare> MoveValidator::calculateHorizontalMovement() {
     return path;
 }
 
-std::vector<Utils::enumSquare> MoveValidator::calculateDiagonalMovement() {
+std::vector<Utils::enumSquare> Path::calculateDiagonalMovement() {
     std::vector<Utils::enumSquare> path{};
 
     if ((std::abs(move.getFrom() - move.getTo()) % 9) == 0) {
@@ -265,8 +206,3 @@ std::vector<Utils::enumSquare> MoveValidator::calculateDiagonalMovement() {
     }
     return path;
 }
-
-bool MoveValidator::isCastleValid() {
-    return false;
-}
-
