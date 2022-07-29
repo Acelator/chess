@@ -1,44 +1,45 @@
 #ifndef CHESS_GAME_H
 #define CHESS_GAME_H
 
-// Make sure libraries are only compiled once
-#include <cstdint>
-#include <iostream>
-
 #include "utils/utils.h"
-
+#include "utils/attackVector.h"
 #include "board.h"
-#include "move.h"
-
-#include "utils/moveValidator.h"
 #include "player.h"
+
+#include "movement/move.h"
+#include "movement/moveValidator.h"
+#include "movement/moveUtils.h"
 
 class Game {
 private:
-	Player white;
-	Player black;
-	// TODO: Change to m_board
-	Board m_Board{};
+    Player m_white;
+    Player m_black;
+    Board m_board{};
 
-	int turnCount{1};
-	bool currentTurn{};
+    int m_halfTurnCount{1};
+    int m_fiftyMoveCount{0};
+    bool m_currentTurn{};
 
-	void newTurn();
+    void newHalfTurn(Move &move);
 
-	void determineMovementType(Move& move);
 public:
-	Game() : white(Utils::Color::whitePLayer), black(Utils::Color::blackPlayer) {
-		// White starts
-		currentTurn = true;
-	}
-	
-	// Return the player that has the current turn
-	Player& getCurrentPlayer();
+    // TODO: Initialize attack vector when starting the game
+    Game() : m_white(Utils::Color::whitePLayer), m_black(Utils::Color::blackPlayer) {
+        // White starts
+        m_currentTurn = true;
 
-	Player& getNextPlayer();
+        calculateInitialAttackVector(m_white, m_board);
+        this->m_board.saveAttackVector(m_white, 0xffff0000);
+        this->m_board.saveAttackVector(m_black, 0xffff00000000);
+    }
 
-	// Allow "to" to be expressed in chess notation (ej. f4)
-	U64 makeMove(Utils::enumPieces pt, std::uint_fast8_t from, std::uint_fast8_t to);
+    // Return the player that has the current turn
+    Player &getCurrentPlayer();
+
+    Player &getNextPlayer();
+
+    // Allow "to" to be expressed in algebraic notation
+    U64 makeMove(Utils::enumPieces pt, std::uint_fast8_t from, std::uint_fast8_t to);
 };
 
 #endif

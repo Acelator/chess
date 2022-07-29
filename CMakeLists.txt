@@ -17,6 +17,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -DNDEBUG")
 # Files
 include_directories(src)
 file(GLOB SOURCES src/*.cpp)
+file(GLOB MOVE src/movement/**.cpp)
 file(GLOB UTILS src/utils/*.cpp)
 
-add_executable(${EXEC} ${SOURCES} ${UTILS})
+add_executable(${EXEC} ${SOURCES} ${MOVE} ${UTILS})
