@@ -1,12 +1,14 @@
 #ifndef CHESS_GAME_H
 #define CHESS_GAME_H
 
-#include "movement/moveValidator.h"
 #include "utils/utils.h"
-
-#include "player.h"
+#include "utils/attackVector.h"
 #include "board.h"
+#include "player.h"
+
 #include "movement/move.h"
+#include "movement/moveValidator.h"
+#include "movement/moveUtils.h"
 
 class Game {
 private:
@@ -20,13 +22,15 @@ private:
 
     void newHalfTurn(Move &move);
 
-    void determineMovementType(Move &move);
-
 public:
     // TODO: Initialize attack vector when starting the game
     Game() : m_white(Utils::Color::whitePLayer), m_black(Utils::Color::blackPlayer) {
         // White starts
         m_currentTurn = true;
+
+        calculateInitialAttackVector(m_white, m_board);
+        this->m_board.saveAttackVector(m_white, 0xffff0000);
+        this->m_board.saveAttackVector(m_black, 0xffff00000000);
     }
 
     // Return the player that has the current turn

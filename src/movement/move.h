@@ -51,12 +51,11 @@ public:
     bool isEnPassant() const;
 
     void setUpFlags(bool isCastle, bool isCapture, bool isEnPassant);
-
-    // Takes a square in LERF notation and convert it into the number of the file or of the rank
-    // TODO: Remove as a member function??
-    int obtainRankFromSquare(std::uint_fast8_t square);
-
-    int obtainFileFromSquare(std::uint_fast8_t square);
 };
+
+// Takes a square in LERF notation and convert it into the number of the file or of the rank
+int obtainRankFromSquare(std::uint_fast8_t square);
+
+int obtainFileFromSquare(std::uint_fast8_t square);
 
 #endif

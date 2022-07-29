@@ -17,63 +17,6 @@ void Game::newHalfTurn(Move &move) {
     this->m_currentTurn = (!this->m_currentTurn);
 }
 
-void Game::determineMovementType(Move &move) {
-    auto pt = move.getPieceType();
-
-    bool capture{false};
-    bool castle{false};
-    bool enPassant{false};
-
-    // Get a bitboard of the current player
-    U64 currentPlayerBoard = this->m_board.getAllPiecesOfAGivenPlayer(this->getCurrentPlayer());
-    U64 otherPlayerBoard = this->m_board.getAllPiecesOfAGivenPlayer(this->getNextPlayer());
-
-    U64 toSquare = static_cast<std::uint_fast64_t>(1) << move.getTo();
-
-    // Determine if is castle
-    // Right now we aren't able to support both sides independently
-    if (this->getCurrentPlayer().canPlayerCastle()) {
-        if ((pt == Utils::enumPieces::rook) || (pt == Utils::enumPieces::king)) {
-            if (pt == Utils::enumPieces::rook) {
-                // The piece must be moved to the king
-                U64 bitboardOfKings{this->m_board.getPieceSet(Utils::enumPieces::king)};
-                U64 kingBitboard{bitboardOfKings & currentPlayerBoard};
-
-                if ((toSquare & kingBitboard) != 0) {
-                    castle = true;
-                }
-            } else {
-                // King
-                // The piece must be moved to the rook
-                U64 bitboardOfRooks{this->m_board.getPieceSet(Utils::enumPieces::rook)};
-                U64 rookBitboard{bitboardOfRooks & currentPlayerBoard};
-
-                if ((toSquare & rookBitboard) != 0) {
-                    castle = true;
-                }
-            }
-        }
-    }
-
-    // Determine if is capture
-    if ((toSquare & otherPlayerBoard) != 0) {
-        capture = true;
-    }
-
-    // Determine if is en Passant
-    if ((this->m_board.getEnPassantAllowedFiles() != 0) && (move.getPieceType() == Utils::enumPieces::pawn)) {
-        if (capture) {
-            this->m_board.restartEnPassant();
-        } else if (move.obtainFileFromSquare(move.getTo()) == this->m_board.getEnPassantAllowedFiles()) {
-            enPassant = true;
-        }
-    } else if (this->m_board.getEnPassantAllowedFiles() != 0) {
-        this->m_board.restartEnPassant();
-    }
-
-    move.setUpFlags(castle, capture, enPassant);
-}
-
 Player &Game::getCurrentPlayer() {
     if (m_currentTurn) {
         return this->m_white;
@@ -94,7 +37,7 @@ Player &Game::getNextPlayer() {
 // TODO: Update to UCI (Universal Chess Interface)
 U64 Game::makeMove(Utils::enumPieces pt, std::uint_fast8_t from, std::uint_fast8_t to) {
     Move move = Move(pt, getCurrentPlayer(), from, to);
-    this->determineMovementType(move);
+    determineMovementType(this->getCurrentPlayer(), m_board, move);
 
     // Make param constants
     MoveValidator validator = MoveValidator(this->m_board, move, this->getCurrentPlayer());

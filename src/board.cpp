@@ -16,7 +16,7 @@ U64 Board::getAllPiecesOfAGivenPlayer(Player &pj) const {
     return this->m_playerSet[pj.getPlayerColor()];
 }
 
-std::uint_fast8_t Board::getEnPassantAllowedFiles() const {
+std::uint_fast8_t Board::getEnPassantAllowedFile() const {
     return this->enPassantAllowedFile;
 }
 

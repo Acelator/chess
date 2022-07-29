@@ -5,12 +5,12 @@ std::vector<Utils::enumSquare> Path::calculatePath() {
     std::vector<Utils::enumSquare> path{};
 
     // Determine the file of the starting and final square
-    int startingFile = move.obtainFileFromSquare(move.getFrom());
-    int finalFile{move.obtainFileFromSquare(move.getTo())};
+    int startingFile = obtainFileFromSquare(move.getFrom());
+    int finalFile{obtainFileFromSquare(move.getTo())};
 
     // Determine the rank of the starting and final square
-    auto startingRank = move.obtainRankFromSquare(move.getFrom());
-    auto finalRank = move.obtainRankFromSquare(move.getTo());
+    auto startingRank = obtainRankFromSquare(move.getFrom());
+    auto finalRank = obtainRankFromSquare(move.getTo());
 
     switch (pt) {
         case (Utils::enumPieces::pawn): {
@@ -30,10 +30,8 @@ std::vector<Utils::enumSquare> Path::calculatePath() {
                 return verticalVector;
             } else {
                 // Double pawn push
-                // En passant can be performed by the other player in his next turn
-                if (((move.obtainRankFromSquare(move.getFrom()) == 2) && (player.getPlayerColor() == Utils::Color::whitePLayer)) ||
-                    ((move.obtainRankFromSquare(move.getFrom()) == 7) && (player.getPlayerColor() == Utils::Color::blackPlayer))) {
-                    board.newEnPassantOpportunity(startingFile);
+                if (((obtainRankFromSquare(move.getFrom()) == 2) && (player.getPlayerColor() == Utils::Color::whitePLayer)) ||
+                    ((obtainRankFromSquare(move.getFrom()) == 7) && (player.getPlayerColor() == Utils::Color::blackPlayer))) {
                     return verticalVector;
                 } else {
                     // Pawn isn't in the initial position, so the double push isn't possible
@@ -76,26 +74,7 @@ std::vector<Utils::enumSquare> Path::calculatePath() {
             path.push_back(static_cast<Utils::enumSquare>(move.getTo()));
             return path;
         }
-        case (Utils::enumPieces::queen): {
-            auto horizontalVector{calculateHorizontalMovement()};
-            auto verticalVector{calculateVerticalMovement()};
-            auto diagonalVector{calculateDiagonalMovement()};
-
-            if (!horizontalVector.empty()) {
-                for (const auto &i: horizontalVector) {
-                    path.push_back(i);
-                }
-            } else if (!verticalVector.empty()) {
-                for (const auto &i: verticalVector) {
-                    path.push_back(i);
-                }
-            } else if (!diagonalVector.empty()) {
-                for (const auto &i: diagonalVector) {
-                    path.push_back(i);
-                }
-            }
-            break;
-        }
+        case (Utils::enumPieces::queen):
         case (Utils::enumPieces::king): {
             auto horizontalVector{calculateHorizontalMovement()};
             auto verticalVector{calculateVerticalMovement()};
@@ -114,8 +93,7 @@ std::vector<Utils::enumSquare> Path::calculatePath() {
                     path.push_back(i);
                 }
             }
-
-            if (path.size() > 1) {
+            if ((path.size() > 1) && pt == Utils::enumPieces::king) {
                 throw -1;
             }
             break;
@@ -128,8 +106,8 @@ std::vector<Utils::enumSquare> Path::calculateVerticalMovement() {
     std::vector<Utils::enumSquare> path{};
 
     // Determine the file of the starting and final square
-    int startingFile = move.obtainFileFromSquare(move.getFrom());
-    int finalFile{move.obtainFileFromSquare(move.getTo())};
+    int startingFile = obtainFileFromSquare(move.getFrom());
+    int finalFile{obtainFileFromSquare(move.getTo())};
 
     // Piece isn't moving vertically
     if (startingFile != finalFile) {
@@ -154,8 +132,8 @@ std::vector<Utils::enumSquare> Path::calculateHorizontalMovement() {
     std::vector<Utils::enumSquare> path{};
 
     // Determine the rank of the starting and final square
-    auto startingRank = move.obtainRankFromSquare(move.getFrom());
-    auto finalRank = move.obtainRankFromSquare(move.getTo());
+    auto startingRank = obtainRankFromSquare(move.getFrom());
+    auto finalRank = obtainRankFromSquare(move.getTo());
 
     // Piece isn't moving horizontally
     if (startingRank != finalRank) {
@@ -179,14 +157,23 @@ std::vector<Utils::enumSquare> Path::calculateHorizontalMovement() {
 std::vector<Utils::enumSquare> Path::calculateDiagonalMovement() {
     std::vector<Utils::enumSquare> path{};
 
+    if (obtainRankFromSquare(move.getFrom()) == obtainRankFromSquare(move.getTo())) {
+        return path;
+    }
     if ((std::abs(move.getFrom() - move.getTo()) % 9) == 0) {
         if (move.getFrom() > move.getTo()) {
-            // noEa
+            // soWe
+            if (obtainFileFromSquare(move.getFrom()) == 1) {
+                return path;
+            }
             for (int i{move.getFrom() - 9}; i >= move.getTo(); i -= 9) {
                 path.push_back(static_cast<Utils::enumSquare>(i));
             }
         } else {
-            // soWe
+            // noEa
+            if (obtainRankFromSquare(move.getFrom()) == 8) {
+                return path;
+            }
             for (int i{move.getFrom() + 9}; i <= move.getTo(); i += 9) {
                 path.push_back(static_cast<Utils::enumSquare>(i));
             }
@@ -194,11 +181,17 @@ std::vector<Utils::enumSquare> Path::calculateDiagonalMovement() {
     } else if ((std::abs(move.getFrom() - move.getTo()) % 7) == 0) {
         if (move.getFrom() > move.getTo()) {
             // noWe
+            if (obtainRankFromSquare(move.getFrom()) == 1) {
+                return path;
+            }
             for (int i{move.getFrom() - 7}; i >= move.getTo(); i -= 7) {
                 path.push_back(static_cast<Utils::enumSquare>(i));
             }
         } else {
             // soEa
+            if (obtainFileFromSquare(move.getFrom()) == 8) {
+                return path;
+            }
             for (int i{move.getFrom() + 7}; i <= move.getTo(); i += 7) {
                 path.push_back(static_cast<Utils::enumSquare>(i));
             }

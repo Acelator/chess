@@ -44,7 +44,7 @@ public:
 
     U64 getAllPiecesOfAGivenPlayer(Player &pj) const;
 
-    std::uint_fast8_t getEnPassantAllowedFiles() const;
+    std::uint_fast8_t getEnPassantAllowedFile() const;
 
     void updateBoard(Move &move, Player &currentPlayer, Player &nextPlayer);
 

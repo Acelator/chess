@@ -40,7 +40,7 @@ void Move::setUpFlags(bool isCastle, bool isCapture, bool isEnPassant) {
     this->enPassant = isEnPassant;
 }
 
-int Move::obtainFileFromSquare(std::uint_fast8_t square) {
+int obtainFileFromSquare(std::uint_fast8_t square) {
     float division = (static_cast<float>(square) / 8);
     double integer{};
     float decimal = std::modf(division, &integer);
@@ -60,7 +60,7 @@ int Move::obtainFileFromSquare(std::uint_fast8_t square) {
     return 0;
 }
 
-int Move::obtainRankFromSquare(std::uint_fast8_t square) {
+int obtainRankFromSquare(std::uint_fast8_t square) {
     float division = (static_cast<float>(square) / 8);
     if (std::ceil(division) == division) {
         // number is whole
