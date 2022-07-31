@@ -28,9 +28,11 @@ public:
         // White starts
         m_currentTurn = true;
 
-        calculateInitialAttackVector(m_white, m_board);
-        this->m_board.saveAttackVector(m_white, 0xffff0000);
-        this->m_board.saveAttackVector(m_black, 0xffff00000000);
+        auto whiteAttackVector = calculateInitialAttackVector(m_white, m_board);
+        this->m_board.saveAttackVector(m_white, whiteAttackVector);
+
+        auto blackAttackVector = calculateInitialAttackVector(m_black, m_board);
+        this->m_board.saveAttackVector(m_black, blackAttackVector);
     }
 
     // Return the player that has the current turn

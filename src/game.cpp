@@ -41,12 +41,12 @@ U64 Game::makeMove(Utils::enumPieces pt, std::uint_fast8_t from, std::uint_fast8
 
     // Make param constants
     MoveValidator validator = MoveValidator(this->m_board, move, this->getCurrentPlayer());
-    bool isValid = validator.validate();
+    bool isValid = validator.validate(true);
     std::cout << "Movement is: " << std::boolalpha << isValid << '\n';
 
     if (isValid) {
         this->m_board.updateBoard(move, getCurrentPlayer(), getNextPlayer());
-
+        m_board.saveAttackVector(this->getCurrentPlayer(), calculateInitialAttackVector(this->getCurrentPlayer(), m_board));
         try {
             this->newHalfTurn(move);
         } catch (int x) {

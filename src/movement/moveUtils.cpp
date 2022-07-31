@@ -2,8 +2,6 @@
 
 std::vector<Utils::enumSquare> getAllPossibleMovesOfAPiece(Player &pj, Board &board, Utils::enumPieces pt, Utils::enumSquare from) {
     std::vector<Utils::enumSquare> moves{};
-//    U64 pieceBitboard{static_cast<U64>(0x1) << from};
-//    U64 playerBitboard{board.getAllPiecesOfAGivenPlayer(pj)};
 
     switch (pt) {
         case Utils::enumPieces::pawn: {
@@ -477,6 +475,68 @@ std::vector<Utils::enumSquare> getAllPossibleMovesOfAPiece(Player &pj, Board &bo
             break;
         }
     }
+    return moves;
+}
+
+std::vector<Utils::enumSquare> getAttackOfPawn(Player &pj, Board &board, Utils::enumSquare from) {
+    std::vector<Utils::enumSquare> moves{};
+//    Utils::enumPieces pt{Utils::enumPieces::pawn};
+
+    // Check for same player pieces
+    // Max amount of possible moves are two
+    if (pj.getPlayerColor() == Utils::Color::whitePLayer) {
+        int to{from + 9}; // noEa
+        {
+            if (obtainFileFromSquare(from) == obtainFileFromSquare(to)) {
+                // Movement is invalid
+            } else if ((std::abs((obtainFileFromSquare(from) - obtainFileFromSquare(to))) == 1) &&
+                       std::abs((obtainRankFromSquare(from) - obtainRankFromSquare(to))) == 1) {
+                if ((board.getAllPiecesOfAGivenPlayer(pj) & (static_cast<U64>(0x1) << to)) == 0) {
+                    // There isn't friendly piece in the destination square
+                    moves.push_back(static_cast<Utils::enumSquare>(to));
+                }
+            }
+        }
+
+        {
+            to = from + 7;
+            if (obtainFileFromSquare(from) == obtainFileFromSquare(to)) {
+                // Movement is invalid
+            } else if ((std::abs((obtainFileFromSquare(from) - obtainFileFromSquare(to))) == 1) &&
+                       std::abs((obtainRankFromSquare(from) - obtainRankFromSquare(to))) == 1) {
+                if ((board.getAllPiecesOfAGivenPlayer(pj) & (static_cast<U64>(0x1) << to)) == 0) {
+                    // There isn't friendly piece in the destination square
+                    moves.push_back(static_cast<Utils::enumSquare>(to));
+                }
+            }
+        }
+    } else {
+        int to{from - 9}; // soWe
+        {
+            if (obtainFileFromSquare(from) == obtainFileFromSquare(to)) {
+                // Movement is invalid
+            } else if ((std::abs((obtainFileFromSquare(from) - obtainFileFromSquare(to))) == 1) &&
+                       std::abs((obtainRankFromSquare(from) - obtainRankFromSquare(to))) == 1) {
+                if ((board.getAllPiecesOfAGivenPlayer(pj) & (static_cast<U64>(0x1) << to)) == 0) {
+                    // There isn't friendly piece in the destination square
+                    moves.push_back(static_cast<Utils::enumSquare>(to));
+                }
+            }
+        }
+        {
+            to = from - 7;
+            if (obtainFileFromSquare(from) == obtainFileFromSquare(to)) {
+                // Movement is invalid
+            } else if ((std::abs((obtainFileFromSquare(from) - obtainFileFromSquare(to))) == 1) &&
+                       std::abs((obtainRankFromSquare(from) - obtainRankFromSquare(to))) == 1) {
+                if ((board.getAllPiecesOfAGivenPlayer(pj) & (static_cast<U64>(0x1) << to)) == 0) {
+                    // There isn't friendly piece in the destination square
+                    moves.push_back(static_cast<Utils::enumSquare>(to));
+                }
+            }
+        }
+    }
+
     return moves;
 }
 

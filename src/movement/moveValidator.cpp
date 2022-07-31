@@ -1,6 +1,6 @@
 #include "moveValidator.h"
 
-bool MoveValidator::validate() {
+bool MoveValidator::validate(bool save) {
     if (move.getFrom() == move.getTo()) {
         return false;
     }
@@ -42,15 +42,6 @@ bool MoveValidator::validate() {
         }
     }
 
-    // En passant can be performed by the other player in his next turn
-    if (path.size() == 2 && move.getPieceType() == Utils::enumPieces::pawn) {
-        if (((obtainRankFromSquare(move.getFrom()) == 2) && (player.getPlayerColor() == Utils::Color::whitePLayer)) ||
-            ((obtainRankFromSquare(move.getFrom()) == 7) && (player.getPlayerColor() == Utils::Color::blackPlayer))) {
-            // Save en passant info to the board
-            board.newEnPassantOpportunity(obtainFileFromSquare(move.getFrom()));
-        }
-    }
-
     // Represents the path that the piece follow
     U64 movementBoard{};
 
@@ -72,6 +63,17 @@ bool MoveValidator::validate() {
     // No piece intersect during the movement
     if ((completeBoard & movementBoard) == 0) {
         if (!this->isPlayerInCheck()) {
+            // move is valid. Know we can save info to the board
+
+            // En passant can be performed by the other player in his next turn
+            if (path.size() == 2 && move.getPieceType() == Utils::enumPieces::pawn && save) {
+                if (((obtainRankFromSquare(move.getFrom()) == 2) && (player.getPlayerColor() == Utils::Color::whitePLayer)) ||
+                    ((obtainRankFromSquare(move.getFrom()) == 7) && (player.getPlayerColor() == Utils::Color::blackPlayer))) {
+                    // Save en passant info to the board
+                    board.newEnPassantOpportunity(obtainFileFromSquare(move.getFrom()));
+                }
+            }
+
             return true;
         }
     }

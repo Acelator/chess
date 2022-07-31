@@ -8,6 +8,7 @@
 #include "../utils/utils.h"
 #include "path.h"
 
+// This class should not update the board
 class MoveValidator {
 private:
     Board &board;
@@ -17,7 +18,8 @@ private:
 public:
     MoveValidator(Board &currentBoard, Move &movement, Player &player) : board(currentBoard), move(movement), player(player) {};
 
-    bool validate();
+    // Save is a param that allows us to know if the current move that is validated should update the board to pass along check and en passant info.
+    bool validate(bool save = false);
 
     bool isPlayerInCheck();
 
