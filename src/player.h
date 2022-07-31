@@ -9,6 +9,7 @@
 class Player {
     Utils::Color m_color;
     bool canCastle{true};
+    bool underCheck{false};
 
     std::vector<Utils::enumPieces> m_lostPieces{};
 public:
@@ -21,6 +22,10 @@ public:
     void disallowCastle();
 
     bool canPlayerCastle() const;
+
+    bool isPlayerUnderCheck() const;
+
+    void updateCheckStatus(bool check);
 
     void newLostPiece(Utils::enumPieces pt);
 

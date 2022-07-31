@@ -57,7 +57,7 @@ bool MoveValidator::validate(bool save) {
         movementBoard = (movementBoard | currentSquare);
     }
 
-    std::cout << "complete: " << movementBoard << '\n';
+//    std::cout << "complete: " << movementBoard << '\n';
     auto completeBoard{this->board.getCompleteBoard()};
 
     // No piece intersect during the movement

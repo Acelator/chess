@@ -20,3 +20,11 @@ void Player::newLostPiece(Utils::enumPieces pt) {
 std::vector<Utils::enumPieces> Player::getLostPieces() {
     return this->m_lostPieces;
 }
+
+bool Player::isPlayerUnderCheck() const {
+    return this->underCheck;
+}
+
+void Player::updateCheckStatus(bool check) {
+    this->underCheck = check;
+}

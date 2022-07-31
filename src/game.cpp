@@ -47,6 +47,16 @@ U64 Game::makeMove(Utils::enumPieces pt, std::uint_fast8_t from, std::uint_fast8
     if (isValid) {
         this->m_board.updateBoard(move, getCurrentPlayer(), getNextPlayer());
         m_board.saveAttackVector(this->getCurrentPlayer(), calculateInitialAttackVector(this->getCurrentPlayer(), m_board));
+
+        // Update check status
+        U64 otherPlayerKingBitboard{m_board.getAllPiecesOfAGivenPlayer(this->getNextPlayer()) & m_board.getPieceSet(Utils::enumPieces::king)};
+        if ((otherPlayerKingBitboard & m_board.getPlayerAttackVector(this->getCurrentPlayer())) != 0) {
+            std::cout << "Player: " << this->getNextPlayer().getPlayerColor() << " is under check\n";
+            this->getNextPlayer().updateCheckStatus(true);
+        } else {
+            this->getNextPlayer().updateCheckStatus(false);
+        }
+
         try {
             this->newHalfTurn(move);
         } catch (int x) {
