@@ -17,50 +17,34 @@ void Game::newHalfTurn(Move &move) {
     this->m_currentTurn = (!this->m_currentTurn);
 }
 
-Player &Game::getCurrentPlayer() {
-    if (m_currentTurn) {
-        return this->m_white;
-    } else {
-        return this->m_black;
-    }
-}
-
-Player &Game::getNextPlayer() {
-    if (!m_currentTurn) {
-        return this->m_white;
-    } else {
-        return this->m_black;
-    }
-}
-
 // Allow to pass piece to promote to
 // TODO: Update to UCI (Universal Chess Interface)
 U64 Game::makeMove(Utils::enumPieces pt, std::uint_fast8_t from, std::uint_fast8_t to) {
-    Move move = Move(pt, getCurrentPlayer(), from, to);
-    determineMovementType(this->getCurrentPlayer(), m_board, move);
+    Move move = Move(pt, players.getCurrentPlayer(), from, to);
+    determineMovementType(players.getCurrentPlayer(), m_board, move);
 
     // Make param constants
-    MoveValidator validator = MoveValidator(this->m_board, move, this->getCurrentPlayer());
+    MoveValidator validator = MoveValidator(this->m_board, move, players.getCurrentPlayer());
     bool isValid = validator.validate(true);
     std::cout << "Movement is: " << std::boolalpha << isValid << '\n';
 
     if (isValid) {
-        this->m_board.updateBoard(move, getCurrentPlayer(), getNextPlayer());
-        m_board.saveAttackVector(this->getCurrentPlayer(), calculateInitialAttackVector(this->getCurrentPlayer(), m_board));
+        this->m_board.updateBoard(move, players);
+        m_board.saveAttackVector(players.getCurrentPlayer(), calculateInitialAttackVector(players.getCurrentPlayer(), m_board));
 
         // Update check status
-        U64 otherPlayerKingBitboard{m_board.getAllPiecesOfAGivenPlayer(this->getNextPlayer()) & m_board.getPieceSet(Utils::enumPieces::king)};
-        if ((otherPlayerKingBitboard & m_board.getPlayerAttackVector(this->getCurrentPlayer())) != 0) {
-            std::cout << "Player: " << this->getNextPlayer().getPlayerColor() << " is under check\n";
+        U64 otherPlayerKingBitboard{m_board.getAllPiecesOfAGivenPlayer(players.getNextPlayer()) & m_board.getPieceSet(Utils::enumPieces::king)};
+        if ((otherPlayerKingBitboard & m_board.getPlayerAttackVector(players.getCurrentPlayer())) != 0) {
+            std::cout << "Player: " << players.getNextPlayer().getPlayerColor() << " is under check\n";
 
             // Check if the move has lead to checkmate
-            if (isCheckMate(this->getNextPlayer(), this->getCurrentPlayer(), this->m_board)) {
+            if (isCheckMate(players.getNextPlayer(), players.getCurrentPlayer(), this->m_board)) {
                 std::cout << "Checkmated\n";
                 throw -2;
             }
-            this->getNextPlayer().updateCheckStatus(true);
+            players.getNextPlayer().updateCheckStatus(true);
         } else {
-            this->getNextPlayer().updateCheckStatus(false);
+            players.getNextPlayer().updateCheckStatus(false);
         }
 
         try {

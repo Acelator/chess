@@ -32,4 +32,27 @@ public:
     std::vector<Utils::enumPieces> getLostPieces();
 };
 
+class Players {
+    Player m_white;
+    Player m_black;
+
+    // True is m_white, false is m_black
+    const bool &m_currentTurn{true};
+
+public:
+    explicit Players(const bool &turn) : m_white(Utils::Color::whitePLayer), m_black(Utils::Color::blackPlayer), m_currentTurn(turn) {
+
+    }
+
+    // Return the player that has the current turn
+    Player &getCurrentPlayer();
+
+    Player &getNextPlayer();
+
+    Player &getWhitePlayer();
+
+    Player &getBlackPlayer();
+
+};
+
 #endif

@@ -12,33 +12,26 @@
 
 class Game {
 private:
-    Player m_white;
-    Player m_black;
+    // White starts
+    bool m_currentTurn{true};
+
+    Players players;
     Board m_board{};
 
     int m_halfTurnCount{1};
     int m_fiftyMoveCount{0};
-    bool m_currentTurn{};
 
     void newHalfTurn(Move &move);
 
 public:
     // TODO: Initialize attack vector when starting the game
-    Game() : m_white(Utils::Color::whitePLayer), m_black(Utils::Color::blackPlayer) {
-        // White starts
-        m_currentTurn = true;
+    Game() : m_currentTurn(true), players(m_currentTurn) {
+        auto whiteAttackVector = calculateInitialAttackVector(players.getWhitePlayer(), m_board);
+        this->m_board.saveAttackVector(players.getWhitePlayer(), whiteAttackVector);
 
-        auto whiteAttackVector = calculateInitialAttackVector(m_white, m_board);
-        this->m_board.saveAttackVector(m_white, whiteAttackVector);
-
-        auto blackAttackVector = calculateInitialAttackVector(m_black, m_board);
-        this->m_board.saveAttackVector(m_black, blackAttackVector);
+        auto blackAttackVector = calculateInitialAttackVector(players.getBlackPlayer(), m_board);
+        this->m_board.saveAttackVector(players.getBlackPlayer(), blackAttackVector);
     }
-
-    // Return the player that has the current turn
-    Player &getCurrentPlayer();
-
-    Player &getNextPlayer();
 
     // Allow "to" to be expressed in algebraic notation
     U64 makeMove(Utils::enumPieces pt, std::uint_fast8_t from, std::uint_fast8_t to);

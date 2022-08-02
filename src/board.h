@@ -46,9 +46,9 @@ public:
 
     std::uint_fast8_t getEnPassantAllowedFile() const;
 
-    void updateBoard(Move &move, Player &currentPlayer, Player &nextPlayer);
+    void updateBoard(Move &move, Players &players);
 
-    void undoMove(Move &move, Player &currentPlayer, Player &nextPlayer);
+    void undoMove(Move &move, Players &players);
 
     // Attacks vector
     U64 getPlayerAttackVector(Player &pj) const;

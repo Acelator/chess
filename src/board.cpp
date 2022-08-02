@@ -48,12 +48,12 @@ void Board::restartEnPassant() {
 
 // TODO: Pass current player and the next one
 // TODO: Implement castle
-void Board::updateBoard(Move &move, Player &currentPlayer, Player &nextPlayer) {
+void Board::updateBoard(Move &move, Players &players) {
     U64 startingPieceBitboard = static_cast<unsigned long>(0x1) << move.getFrom();
     U64 finalPieceBitboard = static_cast<unsigned long>(0x1) << move.getTo();
 
     // Update the board of the player that is currently moving
-    U64 playerBoard{this->getAllPiecesOfAGivenPlayer(currentPlayer)};
+    U64 playerBoard{this->getAllPiecesOfAGivenPlayer(players.getCurrentPlayer())};
     U64 piecesBoard{this->getPieceSet(move.getPieceType())};
 
     // Delete from the starting position the piece moved
@@ -64,12 +64,12 @@ void Board::updateBoard(Move &move, Player &currentPlayer, Player &nextPlayer) {
     playerBoard |= finalPieceBitboard;
 
     // Save it
-    this->m_playerSet[currentPlayer.getPlayerColor()] = playerBoard;
+    this->m_playerSet[players.getCurrentPlayer().getPlayerColor()] = playerBoard;
 
     if (move.isCapture()) {
         U64 otherPlayerBoard{this->getCompleteBoard() ^ playerBoard};
-        nextPlayer.newLostPiece(move.getPieceType());
-        this->m_playerSet[nextPlayer.getPlayerColor()] = otherPlayerBoard;
+        players.getNextPlayer().newLostPiece(move.getPieceType());
+        this->m_playerSet[players.getNextPlayer().getPlayerColor()] = otherPlayerBoard;
     }
 
     if (move.isPromotion()) {
@@ -94,14 +94,14 @@ void Board::updateBoard(Move &move, Player &currentPlayer, Player &nextPlayer) {
         piecesBoard |= finalPieceBitboard;
 
         U64 positionOfPieceToEat;
-        if (currentPlayer.getPlayerColor() == Utils::Color::whitePLayer) {
+        if (players.getCurrentPlayer().getPlayerColor() == Utils::Color::whitePLayer) {
             positionOfPieceToEat = finalPieceBitboard >> 8;
         } else {
             positionOfPieceToEat = finalPieceBitboard << 8;
         }
 
         // Always a pawn
-        nextPlayer.newLostPiece(Utils::enumPieces::pawn);
+        players.getNextPlayer().newLostPiece(Utils::enumPieces::pawn);
 
         // Delete the eaten piece
         otherPlayerBoard ^= positionOfPieceToEat;
@@ -109,78 +109,85 @@ void Board::updateBoard(Move &move, Player &currentPlayer, Player &nextPlayer) {
 
         // Saves to the bitboard
         this->m_pieces[move.getPieceType()] = piecesBoard;
-        this->m_playerSet[nextPlayer.getPlayerColor()] = otherPlayerBoard;
+        this->m_playerSet[players.getNextPlayer().getPlayerColor()] = otherPlayerBoard;
 
         this->restartEnPassant();
     }
 }
 
-void Board::undoMove(Move &move, Player &currentPlayer, Player &nextPlayer) {
-//    U64 startingPieceBitboard = static_cast<unsigned long>(0x1) << move.getFrom();
-//    U64 finalPieceBitboard = static_cast<unsigned long>(0x1) << move.getTo();
-//
-//    // Update the board of the player that is currently moving
-//    U64 playerBoard{this->getAllPiecesOfAGivenPlayer(currentPlayer)};
-//    U64 piecesBoard{this->getPieceSet(move.getPieceType())};
-//
-//    // Delete from the starting position the piece moved
-//    playerBoard ^= startingPieceBitboard;
-//    piecesBoard ^= startingPieceBitboard;
-//
-//    // input the new piece position
-//    playerBoard |= finalPieceBitboard;
-//
-//    // Save it
-//    this->m_playerSet[currentPlayer.getPlayerColor()] = playerBoard;
-//
-//    if (move.isCapture()) {
-//        U64 otherPlayerBoard{this->getCompleteBoard() ^ playerBoard};
-//        nextPlayer.newLostPiece(move.getPieceType());
-//        this->m_playerSet[nextPlayer.getPlayerColor()] = otherPlayerBoard;
-//    }
-//
-//    if (move.isPromotion()) {
-//        // Save the bitboard of the initial piece without the promoted one
-//        this->m_pieces[move.getPieceType()] = piecesBoard;
-//
-//        // Add the new promoted piece to its corresponding bitboard
-//        U64 promotedPieceBitboard{this->getPieceSet(move.getPieceToPromoteTo())};
-//        promotedPieceBitboard |= finalPieceBitboard;
-//        this->m_pieces[move.getPieceToPromoteTo()] = promotedPieceBitboard;
-//
-//    } else {
-//        // input the new piece position
-//        piecesBoard |= finalPieceBitboard;
-//        this->m_pieces[move.getPieceType()] = piecesBoard;
-//    }
-//
-//    if (move.isEnPassant()) {
-//        U64 otherPlayerBoard{this->getCompleteBoard() ^ playerBoard};
-//
-//        // input the new piece position
-//        piecesBoard |= finalPieceBitboard;
-//
-//        U64 positionOfPieceToEat;
-//        if (currentPlayer.getPlayerColor() == Utils::Color::whitePLayer) {
-//            positionOfPieceToEat = finalPieceBitboard >> 8;
-//        } else {
-//            positionOfPieceToEat = finalPieceBitboard << 8;
-//        }
-//
-//        // Always a pawn
-//        nextPlayer.newLostPiece(Utils::enumPieces::pawn);
-//
-//        // Delete the eaten piece
-//        otherPlayerBoard ^= positionOfPieceToEat;
-//        piecesBoard ^= positionOfPieceToEat;
-//
-//        // Saves to the bitboard
-//        this->m_pieces[move.getPieceType()] = piecesBoard;
-//        this->m_playerSet[nextPlayer.getPlayerColor()] = otherPlayerBoard;
-//
-//        this->restartEnPassant();
+void Board::undoMove(Move &move, Players &players) {
+    U64 startingPieceBitboard = static_cast<unsigned long>(0x1) << move.getTo();
+    U64 finalPieceBitboard = static_cast<unsigned long>(0x1) << move.getFrom();
+
+    // Update the board of the player that is currently moving
+    U64 playerBoard{this->getAllPiecesOfAGivenPlayer(players.getCurrentPlayer())};
+    U64 piecesBoard{this->getPieceSet(move.getPieceType())};
+
+    // Delete from the starting position the piece moved
+    playerBoard ^= startingPieceBitboard;
+    piecesBoard ^= startingPieceBitboard;
+
+    // input the new piece position
+    playerBoard |= finalPieceBitboard;
+
+    // Save it
+    this->m_playerSet[players.getCurrentPlayer().getPlayerColor()] = playerBoard;
+
+    if (move.isCapture()) {
+        U64 otherPlayerBoard{this->getCompleteBoard() ^ playerBoard};
+
+        // Add the piece that was eaten to the board. Also delete it from the list of eaten pieces
+        auto pt = players.getNextPlayer().getLostPieces().back();
+        players.getNextPlayer().getLostPieces().pop_back();
+
+        otherPlayerBoard |= startingPieceBitboard;
+        this->m_playerSet[players.getNextPlayer().getPlayerColor()] = otherPlayerBoard;
+
+        this->m_pieces[pt] |= startingPieceBitboard;
     }
 
+    if (move.isPromotion()) {
+        // Save the bitboard of the initial piece with the one that was promoted
+        this->m_pieces[move.getPieceType()] |= finalPieceBitboard;
+
+        // Delete the  promoted piece from its corresponding bitboard
+        U64 promotedPieceBitboard{this->getPieceSet(move.getPieceToPromoteTo())};
+        promotedPieceBitboard ^= finalPieceBitboard;
+        this->m_pieces[move.getPieceToPromoteTo()] = promotedPieceBitboard;
+
+    } else {
+        // input the new piece position
+        piecesBoard |= finalPieceBitboard;
+        this->m_pieces[move.getPieceType()] = piecesBoard;
+    }
+
+    // TODO: Implement
+    if (move.isEnPassant()) {
+        U64 otherPlayerBoard{this->getCompleteBoard() ^ playerBoard};
+
+        // input the new piece position
+        piecesBoard |= finalPieceBitboard;
+
+        U64 positionOfPieceToEat;
+        if (players.getCurrentPlayer().getPlayerColor() == Utils::Color::whitePLayer) {
+            positionOfPieceToEat = finalPieceBitboard >> 8;
+        } else {
+            positionOfPieceToEat = finalPieceBitboard << 8;
+        }
+
+        // Always a pawn
+        players.getNextPlayer().newLostPiece(Utils::enumPieces::pawn);
+
+        // Delete the eaten piece
+        otherPlayerBoard ^= positionOfPieceToEat;
+        piecesBoard ^= positionOfPieceToEat;
+
+        // Saves to the bitboard
+        this->m_pieces[move.getPieceType()] = piecesBoard;
+        this->m_playerSet[players.getNextPlayer().getPlayerColor()] = otherPlayerBoard;
+
+        this->restartEnPassant();
+    }
 }
 
 U64 Board::mirrorHorizontal(U64 x) {

@@ -28,3 +28,28 @@ bool Player::isPlayerUnderCheck() const {
 void Player::updateCheckStatus(bool check) {
     this->underCheck = check;
 }
+
+// Players
+Player &Players::getCurrentPlayer() {
+    if (m_currentTurn) {
+        return this->m_white;
+    } else {
+        return this->m_black;
+    }
+}
+
+Player &Players::getNextPlayer() {
+    if (!m_currentTurn) {
+        return this->m_white;
+    } else {
+        return this->m_black;
+    }
+}
+
+Player &Players::getWhitePlayer() {
+    return this->m_white;
+}
+
+Player &Players::getBlackPlayer() {
+    return this->m_black;
+}
