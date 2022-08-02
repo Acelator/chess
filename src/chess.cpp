@@ -8,6 +8,13 @@ int main() {
     std::cout << "CHESS GAME\n";
     std::cout << "Pieces: (0) pawn, (1) bishop, (2) knight, (3) rook, (4) queen, (5) king\n";
 
+    game.makeMove(Utils::enumPieces::pawn, 12,28);
+    game.makeMove(Utils::enumPieces::knight, 57,40);
+    game.makeMove(Utils::enumPieces::queen, 3,39);
+    game.makeMove(Utils::enumPieces::knight, 40,25);
+    game.makeMove(Utils::enumPieces::bishop, 5,26);
+    game.makeMove(Utils::enumPieces::knight, 25,40);
+
     while (true) {
         std::cout << "New turn\n";
         std::cout << "Introduce piece to move: ";

@@ -52,6 +52,12 @@ U64 Game::makeMove(Utils::enumPieces pt, std::uint_fast8_t from, std::uint_fast8
         U64 otherPlayerKingBitboard{m_board.getAllPiecesOfAGivenPlayer(this->getNextPlayer()) & m_board.getPieceSet(Utils::enumPieces::king)};
         if ((otherPlayerKingBitboard & m_board.getPlayerAttackVector(this->getCurrentPlayer())) != 0) {
             std::cout << "Player: " << this->getNextPlayer().getPlayerColor() << " is under check\n";
+
+            // Check if the move has lead to checkmate
+            if (isCheckMate(this->getNextPlayer(), this->getCurrentPlayer(), this->m_board)) {
+                std::cout << "Checkmated\n";
+                throw -2;
+            }
             this->getNextPlayer().updateCheckStatus(true);
         } else {
             this->getNextPlayer().updateCheckStatus(false);

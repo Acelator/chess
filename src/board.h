@@ -31,8 +31,8 @@ public:
         m_pieces[Utils::enumPieces::bishop] = 0x2400000000000024;
         m_pieces[Utils::enumPieces::knight] = 0x4200000000000042;
         m_pieces[Utils::enumPieces::rook] = 0x8100000000000081;
-        m_pieces[Utils::enumPieces::queen] = 0x0800000000000010;
-        m_pieces[Utils::enumPieces::king] = 0x1000000000000008;
+        m_pieces[Utils::enumPieces::queen] = 0x800000000000008;
+        m_pieces[Utils::enumPieces::king] = 0x1000000000000010;
     }
 
     // Board related
@@ -48,8 +48,10 @@ public:
 
     void updateBoard(Move &move, Player &currentPlayer, Player &nextPlayer);
 
+    void undoMove(Move &move, Player &currentPlayer, Player &nextPlayer);
+
     // Attacks vector
-    U64 getPlayerAttackVector(Player& pj) const;
+    U64 getPlayerAttackVector(Player &pj) const;
 
     U64 getOtherPlayerAttackVector(Player &pj) const;
 

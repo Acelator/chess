@@ -181,7 +181,7 @@ std::vector<Utils::enumSquare> Path::calculateDiagonalMovement() {
     } else if ((std::abs(move.getFrom() - move.getTo()) % 7) == 0) {
         if (move.getFrom() > move.getTo()) {
             // noWe
-            if (obtainRankFromSquare(move.getFrom()) == 1) {
+            if (obtainRankFromSquare(move.getFrom()) == 8) {
                 return path;
             }
             for (int i{move.getFrom() - 7}; i >= move.getTo(); i -= 7) {
@@ -189,7 +189,7 @@ std::vector<Utils::enumSquare> Path::calculateDiagonalMovement() {
             }
         } else {
             // soEa
-            if (obtainFileFromSquare(move.getFrom()) == 8) {
+            if (obtainFileFromSquare(move.getFrom()) == 1) {
                 return path;
             }
             for (int i{move.getFrom() + 7}; i <= move.getTo(); i += 7) {
