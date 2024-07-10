@@ -6,6 +6,9 @@ project(learning
         LANGUAGES CXX
 )
 
+#add_library(engine SHARED "lib/engine/**/*.cpp" "lib/engine/**/*.h")
+#set_target_properties(engine PROPERTIES VERSION ${PROJECT_VERSION})
+
 #Config
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
